@@ -1,3 +1,8 @@
+var Usuario_amigo = require('../models/User_friend');
+var Story = require('../models/Story');
+var fs = require('fs');
+var path = require('path');
+
 const get_story_img = async function (req, res) {
     var img = req.params['img'];
     fs.stat('./uploads/stories/' + img, function (err) {

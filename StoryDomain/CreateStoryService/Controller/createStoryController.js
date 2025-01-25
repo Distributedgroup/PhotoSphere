@@ -1,3 +1,8 @@
+var Usuario_amigo = require('../models/User_friend');
+var Story = require('../models/Story');
+var fs = require('fs');
+var path = require('path');
+
 const createStory = async function (req, res) {
     if (req.user) {
 
