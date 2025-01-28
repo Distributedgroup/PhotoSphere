@@ -1,7 +1,6 @@
 {
   "name": "back",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js"
@@ -13,7 +12,7 @@
     "body-parser": "^1.20.2",
     "connect-multiparty": "^2.2.0",
     "ejs": "^3.1.9",
-    "express": "^4.18.2",
+    "express": "^4.21.2",
     "handlebars": "^4.7.7",
     "i": "^0.3.7",
     "jwt-simple": "^0.5.6",
@@ -28,5 +27,7 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
-  }
+  },
+  "keywords": [],
+  "description": ""
 }

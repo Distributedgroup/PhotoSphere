@@ -2,8 +2,6 @@ var Post = require('../models/Post');
 var Post_likes = require('../models/Post_likes');
 var Post_comments = require('../models/Post_comments');
 var User_friend = require('../models/User_friend');
-var User = require('../models/User');
-const Notification = require('../models/Notification');
 var fs = require('fs');
 var path = require('path');
 
@@ -34,7 +32,7 @@ const get_post_friends = async function(req,res){
 
                         arr_comments.push({
                             comment: replay,
-                            answers: respuestas
+                            answers: answers
                         });
                     }
 

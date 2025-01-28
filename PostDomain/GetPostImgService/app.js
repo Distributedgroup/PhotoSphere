@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
     });
 });
 
-var historia_routes = require('./routes/getUserStories');
+var getPostImg_routes = require('./routes/getPostImg');
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/social',(err,res)=>{
@@ -51,7 +51,7 @@ app.use((req,res,next)=>{
 });
 
 
-app.use('/api',getUserStories_routes);
+app.use('/api',getPostImg_routes);
 
 
 module.exports = app;

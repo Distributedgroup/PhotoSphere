@@ -29,8 +29,7 @@ io.on("connection", (socket) => {
     });
 });
 
-var historia_routes = require('./routes/createStory');
-
+var createPost_routes = require('./routes/createPost');
 
 mongoose.connect('mongodb://127.0.0.1:27017/social',(err,res)=>{
     if(err) console.log(err);
@@ -51,7 +50,7 @@ app.use((req,res,next)=>{
 });
 
 
-app.use('/api',createStory_routes);
+app.use('/api',createPost_routes);
 
 
 module.exports = app;

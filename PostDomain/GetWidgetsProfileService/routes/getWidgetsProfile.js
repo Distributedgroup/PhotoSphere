@@ -1,5 +1,5 @@
 var express = require('express');
-var postController = require('../controllers/getWidgetsProfileController');
+var getWidgetsProfileController = require('../controller/getWidgetsProfileController');
 var auth = require('../middlewares/auth');
 var multiparty = require('connect-multiparty');
 var path = multiparty({uploadDir:'./uploads/posts'});
