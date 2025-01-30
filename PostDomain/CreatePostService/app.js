@@ -4,13 +4,14 @@ var mongoose = require('mongoose');
 var bodyparser = require('body-parser');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
-
+const cors = require('cors');
 
 var app = express();
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, { /* options */ });
 
+// Socket.IO Events
 io.on("connection", (socket) => {
     // ...
     console.log('socket connected');
@@ -31,6 +32,7 @@ io.on("connection", (socket) => {
 
 var createPost_routes = require('./routes/createPost');
 
+// Database Connection
 mongoose.connect('mongodb://127.0.0.1:27017/social',(err,res)=>{
     if(err) console.log(err);
     else httpServer.listen(port,function(){
@@ -38,6 +40,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/social',(err,res)=>{
     });
 });
 
+// Middleware
+app.use(cors());
 app.use(bodyparser.urlencoded({limit: '50mb',extended:true}));
 app.use(bodyparser.json({limit: '50mb', extended: true}));
 
@@ -49,7 +53,7 @@ app.use((req,res,next)=>{
     next();
 });
 
-
+// API Routes
 app.use('/api',createPost_routes);
 
 
