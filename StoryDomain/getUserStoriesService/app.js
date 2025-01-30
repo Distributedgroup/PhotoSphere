@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
     });
 });
 
-var historia_routes = require('./routes/getUserStories');
+var getUserStories_routes = require('./routes/getUserStories');
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/social',(err,res)=>{
