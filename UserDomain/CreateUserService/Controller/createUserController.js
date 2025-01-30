@@ -1,6 +1,6 @@
-var Usuario = require('../model/User'); // Asegurar que el modelo se importa correctamente
-var Usuario_invitacion = require('../model/User_invitation');
-var Usuario_amigo = require('../model/User_friend');
+var Usuario = require('../Model/User'); // Asegurar que el modelo se importa correctamente
+var Usuario_invitacion = require('../Model/User_invitation');
+var Usuario_amigo = require('../Model/User_friend');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var jwt = require('../helpers/jwt');
