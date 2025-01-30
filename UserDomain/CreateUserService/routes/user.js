@@ -1,10 +1,15 @@
 var express = require('express');
-var usuarioController = require('../controllers/createUserController');
+var createUserController = require('../Controller/createUserController.js'); // ✅ Asegurar que la ruta es correcta
 var auth = require('../middlewares/auth');
 var multiparty = require('connect-multiparty');
-var path = multiparty({uploadDir:'./uploads/portadas'});
-var app = express.Router();
+var path = multiparty({ uploadDir: './uploads/portadas' });
 
-app.post('/create_user',createUserController.create_user);
+var router = express.Router();
 
-module.exports = app;
+if (!createUserController || !createUserController.create_user) {
+    console.error("Error: create_user no está definido en createUserController");
+}
+
+router.post('/users', createUserController.create_user); // 
+
+module.exports = router;
