@@ -1,26 +1,29 @@
-const validate_user = async function(req,res){
-    var data = req.body;
+const { email_code_reset } = require('../services/emailService'); // Import function
+const User = require('../Model/user');  
 
-    var users = await User.find({email:data.email});
+const validate_user = async function(req, res) {
+    try {
+        var data = req.body;
+        var users = await User.find({ email: data.email });
 
-    if(users.length >= 1){
+        if (users.length >= 1) {
+            let min = 1000;
+            let max = 9999;
+            let random = Math.floor(Math.random() * (max - min + 1) + min);
 
-        let min = 1000;
-        let max = 9999;
+            await User.findByIdAndUpdate(users[0]._id, { code_reset: random });
 
-        let random = Math.floor(Math.random()*(max-min+1)+min);
-        let user = await User.findByIdAndUpdate({_id:users[0]._id},{
-            code_reset: random
-        });
+            // Send the code by email
+            await email_code_reset(random, users[0].email);
 
-        email_code_reset(random,user.email);
-
-        res.status(200).send({data:true});
-    }else{
-        res.status(200).send({data:false});
+            res.status(200).send({ data: true });
+        } else {
+            res.status(200).send({ data: false });
+        }
+    } catch (error) {
+        console.error("❌ Error in validate_user:", error);
+        res.status(500).send({ error: "Server error" });
     }
-}
+};
 
-module.exports = {
-    validate_user
-}
+module.exports = { validate_user };
