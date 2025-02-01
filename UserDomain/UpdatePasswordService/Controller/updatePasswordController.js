@@ -1,3 +1,7 @@
+const User = require('../Model/user');  
+const bcrypt = require('bcrypt'); // Add bcrypt import
+
+const saltRounds = 10; // Define saltRounds before using it
 
 const update_password = async function(req,res){
     if (req.user) {
@@ -18,10 +22,10 @@ const update_password = async function(req,res){
                         });
                     });
                 }else{
-                    res.status(200).send({data:undefined,message: 'La contraseña actual es incorrecta'});
+                    res.status(200).send({data:undefined,message: 'The current password is incorrect'});
                 }
             }else{
-                res.status(200).send({data:undefined,message: 'Ocurrió un problema'});
+                res.status(200).send({data:undefined,message: 'A problem occurred'});
             }
         });
 
