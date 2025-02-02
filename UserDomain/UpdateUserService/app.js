@@ -13,7 +13,7 @@ app.use(bodyparser.urlencoded({ limit: "50mb", extended: true }));
 app.use(bodyparser.json({ limit: "50mb", extended: true }));
 app.use(express.json());
 
-// Configurar CORS
+// Configure CORS
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
@@ -25,7 +25,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// **Conectar a MongoDB en Docker dentro de EC2**
+// **Connecting to MongoDB in Docker inside EC2**
 const MONGO_URI = process.env.MONGO_URI || "mongodb://admin:secret@ec2-18-207-77-6.compute-1.amazonaws.com:27017/userservice?authSource=admin";
 
 mongoose
@@ -34,34 +34,34 @@ mongoose
         useUnifiedTopology: true
     })
     .then(() => {
-        console.log("✅ UpdateUserService conectado a MongoDB en EC2");
+        console.log("✅ UpdateUserService connected to MongoDB on EC2");
 
-        // **Iniciar Servidor solo después de conectar a la base de datos**
+        // **Start Server only after connecting to database**
         httpServer.listen(port, function () {
-            console.log("✅ UpdateUserService corriendo en el puerto " + port);
+            console.log("✅ UpdateUserService running on port " + port);
         });
     })
     .catch((err) => {
-        console.error("❌ Error al conectar a MongoDB:", err);
+        console.error("❌ Error connecting to MongoDB:", err);
     });
 
-// **Configurar Servidor con Socket.io**
+// **Setting up Server with Socket.io**
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
 io.on("connection", (socket) => {
-    console.log("✅ Socket conectado en UpdateUserService");
+    console.log("✅ Socket connected in UpdateUserService");
 });
 
-// **Ruta para recibir notificaciones desde CreateUserService**
+// **Route to receive notifications from CreateUserService**
 app.post("/api/notify", async (req, res) => {
-    console.log("🔔 Notificación recibida de CreateUserService:", req.body);
+    console.log("🔔 Notification received from CreateUserService:", req.body);
 
     if (!req.body.userId) {
-        return res.status(400).json({ message: "Error: userId no recibido" });
+        return res.status(400).json({ message: "Error: userId not received" });
     }
 
-    res.status(200).json({ message: "Notificación recibida con éxito" });
+    res.status(200).json({ message: "Notification received successfully" });
 });
 
 module.exports = app;
