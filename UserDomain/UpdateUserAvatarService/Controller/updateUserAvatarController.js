@@ -1,3 +1,5 @@
+const User = require('../Model/user');  
+
 const update_user_avatar = async function(req,res){
     if (req.user) {
         
