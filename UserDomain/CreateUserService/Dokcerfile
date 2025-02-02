@@ -1,20 +1,20 @@
-# Usa una imagen base de Node.js
+# Use a Node.js base image
 FROM node:18
 
-# Establece el directorio de trabajo en /app
+# Set the working directory to /app
 WORKDIR /app
 
-# Copia solo los archivos de dependencias primero
+# Copy only the dependency files first
 COPY package*.json ./
 
-# Instala las dependencias dentro de Docker
+# Install the dependencies inside Docker
 RUN npm install --force
 
-# Copia el resto del código del proyecto
+# Copy the rest of the project code
 COPY . .
 
-# Expone el puerto 5050
+# Expose port 5050
 EXPOSE 5050
 
-# Comando para ejecutar la aplicación
+# Command to run the application
 CMD ["node", "app.js"]
