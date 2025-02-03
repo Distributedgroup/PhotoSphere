@@ -18,6 +18,12 @@ jobs:
         id: filter
         run: |
           services=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | awk -F'/' '{print $1}' | sort -u | uniq)
+          
+          # Si hay cambios en archivos clave en la raíz del microservicio, activa la reconstrucción
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -qE "^(Dockerfile|app.js|package.json|.env)$"; then
+            services="microservicio"  # Nombre de tu microservicio
+          fi
+
           if [[ -z "$services" ]]; then
             echo "No services changed."
             echo "services=[]" >> $GITHUB_OUTPUT
@@ -27,7 +33,7 @@ jobs:
 
   build-and-push:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.services != '[]' }}  # Evita ejecutar si no hay cambios
+    if: ${{ needs.detect-changes.outputs.services != '[]' }}  # Solo se ejecuta si hay cambios
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -49,13 +55,17 @@ jobs:
             exit 1
           fi
           SERVICE=${{ matrix.service }}
-          IMAGE_NAME="fernanyag20/${SERVICE,,}"
-          docker build -t $IMAGE_NAME:latest $SERVICE
-          docker push $IMAGE_NAME:latest
+          IMAGE_NAME="fernanyag20/${SERVICE,,}"  # Nombre de imagen en DockerHub
+          
+          echo "Building Docker image for $SERVICE..."
+          docker build -t $IMAGE_NAME:latest $SERVICE  # Construcción de la imagen
+          
+          echo "Pushing Docker image to DockerHub..."
+          docker push $IMAGE_NAME:latest  # Subida a DockerHub
 
   deploy-to-ec2:
     needs: build-and-push
-    if: ${{ needs.detect-changes.outputs.services != '[]' }}  # Evita ejecutar si no hay cambios
+    if: ${{ needs.detect-changes.outputs.services != '[]' }}  # Solo se ejecuta si hay cambios
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -72,10 +82,4 @@ jobs:
               echo "Error: SERVICE is empty. Skipping deployment."
               exit 1
             fi
-            SERVICE=${{ matrix.service }}
-            IMAGE_NAME="fernanyag20/${SERVICE,,}"
-
-            docker pull $IMAGE_NAME:latest
-            docker stop $SERVICE || true
-            docker rm $SERVICE || true
-            docker run -d --name $SERVICE --restart always -p 80:80 -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" $IMAGE_NAME:
+            SERVICE
