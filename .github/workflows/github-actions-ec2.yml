@@ -1,4 +1,3 @@
-
 name: CI/CD Pipeline
 
 on:
@@ -7,11 +6,11 @@ on:
       - dev
 
 jobs:
-jobs:
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
       changed-folder: ${{ steps.filter.outputs.changed }}
+      services: ${{ steps.filter.outputs.services }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -19,27 +18,30 @@ jobs:
       - name: Detect changed folder
         id: filter
         run: |
+          SERVICES="[]"
+
           if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^PostDomain/"; then
             echo "changed=PostDomain" >> $GITHUB_ENV
             echo "::set-output name=changed::PostDomain"
+            SERVICES='["PostDomain"]'
           elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^StoryDomain/"; then
             echo "changed=StoryDomain" >> $GITHUB_ENV
             echo "::set-output name=changed::StoryDomain"
+            SERVICES='["StoryDomain"]'
           elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^UserDomain/"; then
             echo "changed=UserDomain" >> $GITHUB_ENV
             echo "::set-output name=changed::UserDomain"
+            SERVICES='["UserDomain"]'
           else
             echo "changed=none" >> $GITHUB_ENV
             echo "::set-output name=changed::none"
           fi
 
-
-
-
+          echo "::set-output name=services::$SERVICES"
 
   build-and-push:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.services != '[]' }}
+    if: ${{ needs.detect-changes.outputs.services && needs.detect-changes.outputs.services != '[]' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -56,60 +58,10 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          if [[ -z "${{ matrix.service }}" ]]; then
-            echo "Error: SERVICE is empty. Skipping build."
-            exit 1
-          fi
-          
           SERVICE=${{ matrix.service }}
-          IMAGE_NAME="fernanyag20/$(basename ${SERVICE,,})"  # 🔥 Asegurar que el nombre es en minúsculas
+          IMAGE_NAME="fernanyag20/$(basename ${SERVICE,,})"
           
           echo "📌 Building Docker image for $SERVICE..."
-          
-          # 🔥 Determinar el path del microservicio
-          BUILD_PATH="$SERVICE"
-
-          if [[ ! -f "$BUILD_PATH/Dockerfile" ]]; then
-            echo "❌ ERROR: Dockerfile not found in $BUILD_PATH/"
-            exit 1
-          fi
-          
-          docker build -t $IMAGE_NAME:latest $BUILD_PATH
-          
+          docker build -t $IMAGE_NAME:latest $SERVICE
           echo "🚀 Pushing Docker image to DockerHub..."
-          docker push $IMAGE_NAME:latest
-
-
-  deploy-to-ec2:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.changed-folder != 'none'
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        service: ${{ fromJson(needs.detect-changes.outputs.services) }}
-    steps:
-      - name: Debug services output
-        run: |
-          echo "🚨 Valor recibido en deploy-to-ec2: '${{ needs.detect-changes.outputs.services }}'"
-
-
-
-      - name: Connect to EC2 and deploy service
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST_DNS }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            SERVICE=${{ matrix.service }}
-            IMAGE_NAME="fernanyag20/$(basename ${SERVICE,,})"
-
-            echo "📌 Deploying $SERVICE on EC2..."
-            docker pull $IMAGE_NAME:latest
-            docker stop $SERVICE || true
-            docker rm $SERVICE || true
-            docker run -d --name $SERVICE --restart always -p 80:80 $IMAGE_NAME:latest
-            echo "✅ Successfully deployed $SERVICE on EC2"
-
-
+          d
