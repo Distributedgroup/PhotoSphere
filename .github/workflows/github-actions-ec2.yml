@@ -18,10 +18,16 @@ jobs:
         id: filter
         run: |
           services=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | awk -F'/' '{print $1}' | sort -u | uniq)
-          echo "services=$(echo \"$services\" | jq -R -s -c 'split("\n") | map(select(length > 0))')" >> $GITHUB_OUTPUT
+          if [[ -z "$services" ]]; then
+            echo "No services changed."
+            echo "services=[]" >> $GITHUB_OUTPUT
+          else
+            echo "services=$(echo \"$services\" | jq -R -s -c 'split("\n") | map(select(length > 0))')" >> $GITHUB_OUTPUT
+          fi
 
   build-and-push:
     needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.services != '[]' }}  # Evita ejecutar si no hay cambios
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -38,6 +44,10 @@ jobs:
 
       - name: Build and push Docker image
         run: |
+          if [[ -z "${{ matrix.service }}" ]]; then
+            echo "Error: SERVICE is empty. Skipping build."
+            exit 1
+          fi
           SERVICE=${{ matrix.service }}
           IMAGE_NAME="fernanyag20/${SERVICE,,}"
           docker build -t $IMAGE_NAME:latest $SERVICE
@@ -45,6 +55,7 @@ jobs:
 
   deploy-to-ec2:
     needs: build-and-push
+    if: ${{ needs.detect-changes.outputs.services != '[]' }}  # Evita ejecutar si no hay cambios
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -57,12 +68,14 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            if [[ -z "${{ matrix.service }}" ]]; then
+              echo "Error: SERVICE is empty. Skipping deployment."
+              exit 1
+            fi
             SERVICE=${{ matrix.service }}
             IMAGE_NAME="fernanyag20/${SERVICE,,}"
 
             docker pull $IMAGE_NAME:latest
             docker stop $SERVICE || true
             docker rm $SERVICE || true
-            docker run -d --name $SERVICE --restart always -p 80:80 -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" $IMAGE_NAME:latest
-            
-            echo "Desplegado $SERVICE en ${{ secrets.HOST_DNS }}"
+            docker run -d --name $SERVICE --restart always -p 80:80 -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" $IMAGE_NAME:
