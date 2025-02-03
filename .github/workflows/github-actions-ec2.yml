@@ -22,7 +22,7 @@ jobs:
         run: |
           # Obtener lista de archivos modificados
           changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-
+          
           echo "🔍 Archivos modificados detectados:"
           echo "$changed_files"
 
@@ -38,6 +38,8 @@ jobs:
             json_output=$(echo "$services" | jq -R -s -c 'split("\n") | map(select(length > 0))')
             echo "services=$json_output" >> $GITHUB_OUTPUT
           fi
+          
+          echo "🔄 Salida final de detect-changes: $(cat $GITHUB_OUTPUT)"
 
 
 
@@ -86,7 +88,7 @@ jobs:
 
   deploy-to-ec2:
     needs: build-and-push
-    if: ${{ needs.detect-changes.outputs.services != '[]' && needs.detect-changes.outputs.services != '""' && needs.detect-changes.outputs.services != 'null' }}
+    if: ${{ needs.detect-changes.outputs.services != '[]' && needs.detect-changes.outputs.services != '""' && needs.detect-changes.outputs.services != null }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -108,4 +110,5 @@ jobs:
             docker rm $SERVICE || true
             docker run -d --name $SERVICE --restart always -p 80:80 $IMAGE_NAME:latest
             echo "✅ Successfully deployed $SERVICE on EC2"
+
 
