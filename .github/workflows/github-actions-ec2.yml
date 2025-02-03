@@ -68,8 +68,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull alevm98/${{ matrix.service }}:latest
+            docker pull fernanyag20/${{ matrix.service }}:latest
             docker stop ${{ matrix.service }} || true
             docker rm ${{ matrix.service }} || true
-            docker run -d --name ${{ matrix.service }} --restart always -p 80:80 -e JWT_SECRET_KEY="claveSegura123@" alevm98/${{ matrix.service }}:latest
+            docker run -d --name ${{ matrix.service }} --restart always -p 80:80 -e JWT_SECRET_KEY="claveSegura123@" fernanyag20/${{ matrix.service }}:latest
             echo "Desplegado ${{ matrix.service }} en ${{ secrets.HOST_DNS }}"
