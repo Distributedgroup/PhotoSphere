@@ -18,7 +18,7 @@ var UserSchema = Schema({
     username: {type: String, required: false},
     password: {type: String, required: true},
     code_reset: {type: String, required: false},
-    createdAt: {type: Date, default: Date.now},
+
 
 });
 
