@@ -48,5 +48,8 @@ const create_user = async function (req, res) {
     }
 };
 
-
+// Successfully export the function
+module.exports = {
+    create_user
+};
 
