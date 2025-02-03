@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # 🔥 Importante para que git diff funcione correctamente
+          fetch-depth: 0  # 🔥 Importante para evitar errores en git diff
 
       - name: Get changed files
         id: filter
@@ -29,13 +29,13 @@ jobs:
 
           echo "📌 Microservicios detectados para reconstrucción: $services"
 
+          # Si no hay cambios en microservicios, asignar un JSON vacío válido
           if [[ -z "$services" ]]; then
             echo "⚠ No hay microservicios modificados."
             echo "services=[]" >> $GITHUB_OUTPUT
           else
             echo "services=$(echo \"$services\" | jq -R -s -c 'split(\"\n\") | map(select(length > 0))')" >> $GITHUB_OUTPUT
           fi
-
 
 
   build-and-push:
