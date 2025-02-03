@@ -11,6 +11,6 @@ if (!createUserController || !createUserController.create_user) {
     console.error("Error: create_user is not defined in createUserController");
 }
 
-router.post('/users', createUserController.create_user);
+router.post('/users', createUserController.create_user)
 
 module.exports = router;
