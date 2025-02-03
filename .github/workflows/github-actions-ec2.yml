@@ -83,31 +83,27 @@ jobs:
           docker push $IMAGE_NAME:latest
 
 
-  deploy-to-ec2:
+   deploy-to-ec2:
     needs: build-and-push
-    if: ${{ needs.detect-changes.outputs.services != '[]' }}  # Solo se ejecuta si hay cambios
+    if: ${{ needs.build-and-push.outputs.services != '[]' }}  # 🔥 Evita procesar un JSON vacío
     runs-on: ubuntu-latest
     strategy:
       matrix:
         service: ${{ fromJson(needs.detect-changes.outputs.services) }}
     steps:
-      - name: Trigger redeploy on EC2
+      - name: Connect to EC2 and deploy service
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            if [[ -z "${{ matrix.service }}" ]]; then
-              echo "Error: SERVICE is empty. Skipping deployment."
-              exit 1
-            fi
             SERVICE=${{ matrix.service }}
-            IMAGE_NAME="fernanyag20/${SERVICE,,}"
+            IMAGE_NAME="fernanyag20/$(basename ${SERVICE,,})"
 
+            echo "📌 Deploying $SERVICE on EC2..."
             docker pull $IMAGE_NAME:latest
             docker stop $SERVICE || true
             docker rm $SERVICE || true
-            docker run -d --name $SERVICE --restart always -p 80:80 -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" $IMAGE_NAME:latest
-            
-            echo "Desplegado $SERVICE en ${{ secrets.HOST_DNS }}"
+            docker run -d --name $SERVICE --restart always -p 80:80 $IMAGE_NAME:latest
+            echo "✅ Successfully deployed $SERVICE on EC2"
