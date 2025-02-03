@@ -7,37 +7,32 @@ on:
       - dev
 
 jobs:
+jobs:
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
-      services: ${{ steps.filter.outputs.services }}
+      changed-folder: ${{ steps.filter.outputs.changed }}
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Asegura que git diff funcione correctamente
 
-      - name: Get changed files
+      - name: Detect changed folder
         id: filter
         run: |
-          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-          
-          echo "🔍 Archivos modificados detectados:"
-          echo "$changed_files"
-
-          services=$(echo "$changed_files" | awk -F'/' '{print $1 "/" $2}' | sort -u | uniq)
-
-          echo "📌 Microservicios detectados para reconstrucción: $services"
-
-          if [[ -z "$services" ]]; then
-            echo "⚠ No hay microservicios modificados. Se devolverá un JSON vacío."
-            echo "services=[]" >> $GITHUB_OUTPUT
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^PostDomain/"; then
+            echo "changed=PostDomain" >> $GITHUB_ENV
+            echo "::set-output name=changed::PostDomain"
+          elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^StoryDomain/"; then
+            echo "changed=StoryDomain" >> $GITHUB_ENV
+            echo "::set-output name=changed::StoryDomain"
+          elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^UserDomain/"; then
+            echo "changed=UserDomain" >> $GITHUB_ENV
+            echo "::set-output name=changed::UserDomain"
           else
-            json_output=$(echo "$services" | jq -R -s -c 'split("\n") | map(select(length > 0))')
-            echo "services=$json_output" >> $GITHUB_OUTPUT
+            echo "changed=none" >> $GITHUB_ENV
+            echo "::set-output name=changed::none"
           fi
 
-          echo "🔄 Valor final de services en detect-changes: $(cat $GITHUB_OUTPUT)"
 
 
 
@@ -86,9 +81,10 @@ jobs:
 
 
   deploy-to-ec2:
-    needs: build-and-push
-    if: ${{ needs.detect-changes.outputs.services != '[]' && needs.detect-changes.outputs.services != '""' && needs.detect-changes.outputs.services != null }}
+    needs: detect-changes
+    if: needs.detect-changes.outputs.changed-folder != 'none'
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         service: ${{ fromJson(needs.detect-changes.outputs.services) }}
