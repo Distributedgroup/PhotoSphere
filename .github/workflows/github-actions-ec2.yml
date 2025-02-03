@@ -26,19 +26,19 @@ jobs:
           echo "🔍 Archivos modificados detectados:"
           echo "$changed_files"
 
-          # Extraer los microservicios modificados (ejemplo: UserDomain/CreateUserService)
+          # Extraer los nombres de los microservicios modificados (ejemplo: UserDomain/CreateUserService)
           services=$(echo "$changed_files" | awk -F'/' '{print $1 "/" $2}' | sort -u | uniq)
 
           echo "📌 Microservicios detectados para reconstrucción: $services"
 
           # 🔥 Asegurar que `services` tenga un JSON válido aunque no haya cambios
           if [[ -z "$services" ]]; then
-            echo "⚠ No hay microservicios modificados."
             echo "services=[]" >> $GITHUB_OUTPUT
           else
             json_output=$(echo "$services" | jq -R -s -c 'split("\n") | map(select(length > 0))')
             echo "services=$json_output" >> $GITHUB_OUTPUT
           fi
+
 
 
   build-and-push:
@@ -86,7 +86,7 @@ jobs:
 
   deploy-to-ec2:
     needs: build-and-push
-    if: ${{ needs.detect-changes.outputs.services != '[]' && needs.detect-changes.outputs.services != '' }}  # 🔥 Evita procesar un JSON vacío
+    if: ${{ needs.detect-changes.outputs.services != '[]' && needs.detect-changes.outputs.services != '""' && needs.detect-changes.outputs.services != 'null' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
