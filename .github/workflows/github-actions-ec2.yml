@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # 🔥 Asegura que git diff funcione correctamente
+          fetch-depth: 0  # Asegura que git diff funcione correctamente
 
       - name: Get changed files
         id: filter
@@ -37,8 +37,8 @@ jobs:
             echo "services=$json_output" >> $GITHUB_OUTPUT
           fi
 
-          # 🔍 Depuración: Imprimir la salida
-          echo "🔄 Valor final de services: $(cat $GITHUB_OUTPUT)"
+          echo "🔄 Valor final de services en detect-changes: $(cat $GITHUB_OUTPUT)"
+
 
 
 
@@ -96,6 +96,7 @@ jobs:
       - name: Debug services output
         run: |
           echo "🚨 Valor recibido en deploy-to-ec2: '${{ needs.detect-changes.outputs.services }}'"
+
 
 
       - name: Connect to EC2 and deploy service
