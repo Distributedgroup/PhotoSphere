@@ -65,11 +65,11 @@ jobs:
           fi
           
           SERVICE=${{ matrix.service }}
-          IMAGE_NAME="fernanyag20/${SERVICE,,}"
+          IMAGE_NAME="fernanyag20/$(basename ${SERVICE,,})"  # 🔥 Asegurar que el nombre es en minúsculas
           
           echo "📌 Building Docker image for $SERVICE..."
           
-          # 🔥 Determinar el path del microservicio (ejemplo: UserDomain/CreateUserService)
+          # 🔥 Determinar el path del microservicio
           BUILD_PATH="$SERVICE"
 
           if [[ ! -f "$BUILD_PATH/Dockerfile" ]]; then
