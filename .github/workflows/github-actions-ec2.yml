@@ -37,11 +37,11 @@ jobs:
       - name: Build Docker image
         run: |
           cd ${{ matrix.domain }}/${{ matrix.service }}
-          docker build -t alevm98/${{ matrix.service }} .
+          docker build -t fernanyag20/${{ matrix.service }} .
 
       - name: Push Docker image to DockerHub
         run: |
-          docker push alevm98/${{ matrix.service }}:latest
+          docker push fernanyag20/${{ matrix.service }}:latest
 
   deploy-to-ec2:
     needs: build-and-push
