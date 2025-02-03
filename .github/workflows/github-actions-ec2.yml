@@ -12,17 +12,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        domain: [PostDomain, StoryDomain, UserDomain]
+        domain: [UserDomain]
         service: 
-          - CreatePostService
-          - UpdatePostService
-          - DeletePostService
-          - CreateStoryService
-          - UpdateStoryService
-          - DeleteStoryService
+          - AcceptDenyInvitationService
           - CreateUserService
-          - UpdateUserService
+          - GetCoverImageService
+          - GetUserInvitationsService
+          - GetUserRandom
+          - GetUserService
+          - GetUserUsernameService
+          - GetUsersService
+          - LoginUserService
           - ResetPasswordService
+          - SendFriendshipInvitationService
+          - UpdatePasswordService
+          - UpdateUserAvatarService
+          - UpdateUserCoverService
+          - UpdateUserService
+          - ValidateCodeService
           - ValidateUserService
     steps:
       - name: Checkout code
@@ -48,17 +55,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        domain: [PostDomain, StoryDomain, UserDomain]
+        domain: [UserDomain]
         service: 
-          - CreatePostService
-          - UpdatePostService
-          - DeletePostService
-          - CreateStoryService
-          - UpdateStoryService
-          - DeleteStoryService
+          - AcceptDenyInvitationService
           - CreateUserService
-          - UpdateUserService
+          - GetCoverImageService
+          - GetUserInvitationsService
+          - GetUserRandom
+          - GetUserService
+          - GetUserUsernameService
+          - GetUsersService
+          - LoginUserService
           - ResetPasswordService
+          - SendFriendshipInvitationService
+          - UpdatePasswordService
+          - UpdateUserAvatarService
+          - UpdateUserCoverService
+          - UpdateUserService
+          - ValidateCodeService
           - ValidateUserService
     steps:
       - name: Trigger redeploy on EC2
