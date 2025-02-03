@@ -15,19 +15,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # 🔥 Necesario para que git diff funcione correctamente
+          fetch-depth: 0  # 🔥 Asegura que git diff funcione correctamente
 
       - name: Get changed files
         id: filter
         run: |
-          # Obtiene la lista de archivos modificados en este push
+          # Obtener lista de archivos modificados
           changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
 
           echo "🔍 Archivos modificados detectados:"
           echo "$changed_files"
 
-          # Obtiene la carpeta base de cada archivo cambiado
-          services=$(echo "$changed_files" | awk -F'/' '{print $1}' | sort -u | uniq)
+          # Extraer solo los nombres de los microservicios modificados (ejemplo: UserDomain/CreateUserService)
+          services=$(echo "$changed_files" | awk -F'/' '{print $1 "/" $2}' | sort -u | uniq)
 
           echo "📌 Microservicios detectados para reconstrucción: $services"
 
@@ -42,7 +42,7 @@ jobs:
 
   build-and-push:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.services != '[]' }}  # Solo se ejecuta si hay cambios
+    if: ${{ needs.detect-changes.outputs.services != '[]' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -63,14 +63,25 @@ jobs:
             echo "Error: SERVICE is empty. Skipping build."
             exit 1
           fi
+          
           SERVICE=${{ matrix.service }}
-          IMAGE_NAME="fernanyag20/${SERVICE,,}"  # Nombre de imagen en DockerHub
+          IMAGE_NAME="fernanyag20/${SERVICE,,}"
           
-          echo "Building Docker image for $SERVICE..."
-          docker build -t $IMAGE_NAME:latest $SERVICE  # Construcción de la imagen
+          echo "📌 Building Docker image for $SERVICE..."
           
-          echo "Pushing Docker image to DockerHub..."
-          docker push $IMAGE_NAME:latest  # Subida a DockerHub
+          # 🔥 Determinar el path del microservicio (ejemplo: UserDomain/CreateUserService)
+          BUILD_PATH="$SERVICE"
+
+          if [[ ! -f "$BUILD_PATH/Dockerfile" ]]; then
+            echo "❌ ERROR: Dockerfile not found in $BUILD_PATH/"
+            exit 1
+          fi
+          
+          docker build -t $IMAGE_NAME:latest $BUILD_PATH
+          
+          echo "🚀 Pushing Docker image to DockerHub..."
+          docker push $IMAGE_NAME:latest
+
 
   deploy-to-ec2:
     needs: build-and-push
