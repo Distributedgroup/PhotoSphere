@@ -18,19 +18,25 @@ jobs:
       - name: Get changed files
         id: filter
         run: |
-          services=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | awk -F'/' '{print $1}' | sort -u | uniq)
+          # Obtiene la lista de archivos modificados en este push
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
 
-          # Si hay cambios en archivos específicos en la raíz, forzamos la construcción
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -qE "^(Dockerfile|app.js|package.json|.env)$"; then
-            services="mi-servicio"
-          fi
+          echo "🔍 Archivos modificados detectados:"
+          echo "$changed_files"
 
+          # Extraer solo los nombres de las carpetas de primer nivel donde hubo cambios
+          services=$(echo "$changed_files" | awk -F'/' '{print $1}' | sort -u | uniq)
+
+          echo "📌 Microservicios detectados para reconstrucción: $services"
+
+          # Si no hay cambios en microservicios, asignar lista vacía
           if [[ -z "$services" ]]; then
-            echo "No services changed."
+            echo "⚠ No hay microservicios modificados."
             echo "services=[]" >> $GITHUB_OUTPUT
           else
             echo "services=$(echo \"$services\" | jq -R -s -c 'split(\"\n\") | map(select(length > 0))')" >> $GITHUB_OUTPUT
           fi
+
 
   build-and-push:
     needs: detect-changes
