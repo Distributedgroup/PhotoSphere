@@ -1,11 +1,3 @@
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches:
-      - dev
-
-jobs:
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
@@ -17,69 +9,28 @@ jobs:
       - name: Get changed files
         id: filter
         run: |
-          services=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | awk -F'/' '{print $1}' | sort -u | uniq)
+          # Obtiene los archivos modificados
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
           
-          # Si hay cambios en archivos clave en la raíz del microservicio, activa la reconstrucción
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -qE "^(Dockerfile|app.js|package.json|.env)$"; then
-            services="microservicio"  # Nombre de tu microservicio
-          fi
+          echo "Archivos modificados detectados:"
+          echo "$changed_files"
 
-          if [[ -z "$services" ]]; then
-            echo "No services changed."
+          # Identifica los microservicios que han cambiado
+          services=$(echo "$changed_files" | awk -F'/' '{print $1}' | sort -u | uniq)
+
+          # Forzar actualización si se modifican archivos clave en la raíz de cualquier microservicio
+          for service in $services; do
+            if [[ -f "$service/Dockerfile" || -f "$service/app.js" || -f "$service/package.json" || -f "$service/.env" ]]; then
+              detected_services+="$service "
+            fi
+          done
+
+          echo "Microservicios detectados para reconstrucción: $detected_services"
+
+          # Si no hay cambios en microservicios, asignar lista vacía
+          if [[ -z "$detected_services" ]]; then
+            echo "No hay microservicios modificados."
             echo "services=[]" >> $GITHUB_OUTPUT
           else
-            echo "services=$(echo \"$services\" | jq -R -s -c 'split("\n") | map(select(length > 0))')" >> $GITHUB_OUTPUT
+            echo "services=$(echo \"$detected_services\" | jq -R -s -c 'split("\n") | map(select(length > 0))')" >> $GITHUB_OUTPUT
           fi
-
-  build-and-push:
-    needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.services != '[]' }}  # Solo se ejecuta si hay cambios
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: ${{ fromJson(needs.detect-changes.outputs.services) }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Log in to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push Docker image
-        run: |
-          if [[ -z "${{ matrix.service }}" ]]; then
-            echo "Error: SERVICE is empty. Skipping build."
-            exit 1
-          fi
-          SERVICE=${{ matrix.service }}
-          IMAGE_NAME="fernanyag20/${SERVICE,,}"  # Nombre de imagen en DockerHub
-          
-          echo "Building Docker image for $SERVICE..."
-          docker build -t $IMAGE_NAME:latest $SERVICE  # Construcción de la imagen
-          
-          echo "Pushing Docker image to DockerHub..."
-          docker push $IMAGE_NAME:latest  # Subida a DockerHub
-
-  deploy-to-ec2:
-    needs: build-and-push
-    if: ${{ needs.detect-changes.outputs.services != '[]' }}  # Solo se ejecuta si hay cambios
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: ${{ fromJson(needs.detect-changes.outputs.services) }}
-    steps:
-      - name: Trigger redeploy on EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST_DNS }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            if [[ -z "${{ matrix.service }}" ]]; then
-              echo "Error: SERVICE is empty. Skipping deployment."
-              exit 1
-            fi
-            SERVICE
