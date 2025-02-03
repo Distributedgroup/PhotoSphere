@@ -34,14 +34,14 @@ jobs:
             SERVICES='["UserDomain"]'
           else
             echo "changed=none" >> $GITHUB_ENV
-            echo "::set-output name=changed::none"
+            SERVICES='["none"]'
           fi
 
           echo "::set-output name=services::$SERVICES"
 
   build-and-push:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.services && needs.detect-changes.outputs.services != '[]' }}
+    if: ${{ needs.detect-changes.outputs.services && needs.detect-changes.outputs.services != '["none"]' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -64,4 +64,38 @@ jobs:
           echo "📌 Building Docker image for $SERVICE..."
           docker build -t $IMAGE_NAME:latest $SERVICE
           echo "🚀 Pushing Docker image to DockerHub..."
-          d
+          docker push $IMAGE_NAME:latest
+
+  deploy-to-ec2:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.services && needs.detect-changes.outputs.services != '["none"]' }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: ${{ fromJson(needs.detect-changes.outputs.services || '["none"]') }}
+    steps:
+      - name: Debug services output
+        run: |
+          echo "🚨 Deploying for services: '${{ needs.detect-changes.outputs.services }}'"
+
+      - name: Connect to EC2 and deploy service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            SERVICE=${{ matrix.service }}
+            IMAGE_NAME="fernanyag20/$(basename ${SERVICE,,})"
+
+            if [[ "$SERVICE" == "none" ]]; then
+              echo "❌ No valid service to deploy. Exiting."
+              exit 1
+            fi
+
+            echo "📌 Deploying $SERVICE on EC2..."
+            docker pull $IMAGE_NAME:latest
+            docker stop $SERVICE || true
+            docker rm $SERVICE || true
+            docker run -d --name $SERVICE --restart always -p 80:80 $IMAGE_NAME:latest
+            echo "✅ Successfully deployed $SERVICE on EC2"
