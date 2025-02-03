@@ -44,7 +44,7 @@ const create_user = async function (req, res) {
             });
         });
     } else {
-        res.status(400).send({ message: 'Email already exists' })
+        res.status(400).send({ message: 'Email already exists' });
     }
 };
 
