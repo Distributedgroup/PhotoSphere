@@ -73,3 +73,5 @@ jobs:
             docker rm ${{ matrix.service }} || true
             docker run -d --name ${{ matrix.service }} --restart always -p 80:80 -e JWT_SECRET_KEY="claveSegura123@" fernanyag20/${{ matrix.service }}:latest
             echo "Desplegado ${{ matrix.service }} en ${{ secrets.HOST_DNS }}"
+
+
