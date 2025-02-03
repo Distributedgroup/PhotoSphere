@@ -15,28 +15,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # 🔥 Importante para evitar errores en git diff
+          fetch-depth: 0  # 🔥 Necesario para que git diff funcione correctamente
 
       - name: Get changed files
         id: filter
         run: |
+          # Obtiene la lista de archivos modificados en este push
           changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-          
+
           echo "🔍 Archivos modificados detectados:"
           echo "$changed_files"
 
+          # Obtiene la carpeta base de cada archivo cambiado
           services=$(echo "$changed_files" | awk -F'/' '{print $1}' | sort -u | uniq)
 
           echo "📌 Microservicios detectados para reconstrucción: $services"
 
-          # Si no hay cambios en microservicios, asignar un JSON vacío válido
+          # Asegurar que siempre haya una salida JSON válida
           if [[ -z "$services" ]]; then
             echo "⚠ No hay microservicios modificados."
             echo "services=[]" >> $GITHUB_OUTPUT
           else
-            echo "services=$(echo \"$services\" | jq -R -s -c 'split(\"\n\") | map(select(length > 0))')" >> $GITHUB_OUTPUT
+            json_output=$(echo "$services" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+            echo "services=$json_output" >> $GITHUB_OUTPUT
           fi
-
 
   build-and-push:
     needs: detect-changes
