@@ -48,22 +48,6 @@ const create_user = async function (req, res) {
     }
 };
 
-        bcrypt.genSalt(saltRounds, function (err, salt) {
-            bcrypt.hash(data.password, salt, async function (err, hash) {
-                if (err) {
-                    return res.status(500).send({ message: "Error encrypting password" });
-                }
-                data.password = hash;
-                data.username = '@' + uniqueUsernameGenerator(config);
-
-                let user = await Usuario.create(data); 
-                res.status(200).send({ data: user });
-            });
-        });
-    } else {
-        res.status(400).send({ message: 'Email already exists' });
-    }
-};
 
 // Successfully export the function
 module.exports = {
