@@ -18,7 +18,7 @@ jobs:
         id: filter
         run: |
           services=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | awk -F'/' '{print $1}' | sort -u | uniq)
-          echo "services=$(echo $services | jq -R -s -c 'split("\n") | map(select(length > 0))')" >> $GITHUB_ENV
+          echo "services=$(echo \"$services\" | jq -R -s -c 'split("\n") | map(select(length > 0))')" >> $GITHUB_OUTPUT
 
   build-and-push:
     needs: detect-changes
@@ -63,6 +63,6 @@ jobs:
             docker pull $IMAGE_NAME:latest
             docker stop $SERVICE || true
             docker rm $SERVICE || true
-            docker run -d --name $SERVICE --restart always -p 80:80 -e JWT_SECRET_KEY="claveSegura123@" $IMAGE_NAME:latest
+            docker run -d --name $SERVICE --restart always -p 80:80 -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" $IMAGE_NAME:latest
             
             echo "Desplegado $SERVICE en ${{ secrets.HOST_DNS }}"
