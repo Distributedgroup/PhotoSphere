@@ -24,15 +24,16 @@ jobs:
       - name: Detect changed microservices
         id: filter
         run: |
-          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | cut -d'/' -f1 | sort -u)
+          CHANGED=$(git diff --name-only --diff-filter=d HEAD^ HEAD | cut -d'/' -f2 | sort -u)
           SERVICES=""
           for dir in $CHANGED; do
-            if [[ -f "$dir/Dockerfile" ]]; then
-              SERVICES="$SERVICES $dir"
+            if [[ -f "UserDomain/$dir/Dockerfile" ]]; then
+              SERVICES="$SERVICES UserDomain/$dir"
             fi
           done
           echo "Detected changes in: $SERVICES"
-          echo "services=$SERVICES" >> $GITHUB_OUTPUT  # ✅ Nueva forma de definir salida
+          echo "services=$SERVICES" >> $GITHUB_OUTPUT
+
 
   deploy:
     needs: detect-changes
