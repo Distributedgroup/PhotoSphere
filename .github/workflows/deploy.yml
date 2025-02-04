@@ -3,8 +3,8 @@ name: Deploy Microservices
 on:
   push:
     branches:
-      - dev  # Se ejecuta en la rama main
-  workflow_dispatch:  # Permite ejecución manual desde GitHub Actions
+      - dev
+  workflow_dispatch:
 
 jobs:
   detect-changes:
@@ -26,12 +26,12 @@ jobs:
             fi
           done
           echo "Detected changes in: $SERVICES"
-          echo "::set-output name=services::$SERVICES"
+          echo "services=$SERVICES" >> $GITHUB_OUTPUT  # ✅ Nueva forma de definir salida
 
   deploy:
     needs: detect-changes
     runs-on: ubuntu-latest
-    if: ${{ needs.detect-changes.outputs.services != '' }}  # ✅ CORREGIDO: Verifica que hay servicios modificados antes de ejecutar
+    if: ${{ needs.detect-changes.outputs.services != '' }}
     strategy:
       matrix:
         service: ${{ fromJSON('["CreateUserService", "GetUserService", "LoginUserService"]') }}
