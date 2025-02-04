@@ -23,23 +23,10 @@ jobs:
           for SERVICE in $(ls -d */ | sed 's#/##'); do
             if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^$SERVICE/"; then
               case "$SERVICE" in
-                "AcceptDenyInvitationService") IP="${{ secrets.EC2_ACCEPT_DENY_IP }}" ;;
                 "CreateUserService") IP="${{ secrets.EC2_CREATE_USER_IP }}" ;;
-                "GetCoverImageService") IP="${{ secrets.EC2_GET_COVER_IMAGE_IP }}" ;;
-                "GetUserInvitationsService") IP="${{ secrets.EC2_GET_USER_INVITATIONS_IP }}" ;;
-                "GetUserRandom") IP="${{ secrets.EC2_GET_USER_RANDOM_IP }}" ;;
-                "GetUserService") IP="${{ secrets.EC2_GET_USER_IP }}" ;;
-                "GetUserUsernameService") IP="${{ secrets.EC2_GET_USER_USERNAME_IP }}" ;;
-                "GetUsersService") IP="${{ secrets.EC2_GET_USERS_IP }}" ;;
                 "LoginUserService") IP="${{ secrets.EC2_LOGIN_USER_IP }}" ;;
-                "ResetPasswordService") IP="${{ secrets.EC2_RESET_PASSWORD_IP }}" ;;
-                "SendFriendshipInvitationService") IP="${{ secrets.EC2_SEND_FRIENDSHIP_IP }}" ;;
-                "UpdatePasswordService") IP="${{ secrets.EC2_UPDATE_PASSWORD_IP }}" ;;
-                "UpdateUserAvatarService") IP="${{ secrets.EC2_UPDATE_USER_AVATAR_IP }}" ;;
-                "UpdateUserCoverService") IP="${{ secrets.EC2_UPDATE_USER_COVER_IP }}" ;;
+                "GetUsersService") IP="${{ secrets.EC2_GET_USERS_IP }}" ;;
                 "UpdateUserService") IP="${{ secrets.EC2_UPDATE_USER_IP }}" ;;
-                "ValidateCodeService") IP="${{ secrets.EC2_VALIDATE_CODE_IP }}" ;;
-                "ValidateUserService") IP="${{ secrets.EC2_VALIDATE_USER_IP }}" ;;
                 *) IP="none" ;;
               esac
 
@@ -48,6 +35,10 @@ jobs:
               fi
             fi
           done
+
+          if [ "$SERVICES" = "[]" ]; then
+            SERVICES='[{"service": "none", "host": "none"}]'
+          fi
 
           echo "::set-output name=services::$SERVICES"
 
@@ -80,7 +71,7 @@ jobs:
 
   deploy-to-ec2:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.services && needs.detect-changes.outputs.services != '[]' }}
+    if: ${{ needs.detect-changes.outputs.services && needs.detect-changes.outputs.services != '[{"service": "none", "host": "none"}]' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -111,3 +102,4 @@ jobs:
             docker rm $SERVICE || true
             docker run -d --name $SERVICE --restart always -p 80:80 $IMAGE_NAME:latest
             echo "✅ Successfully deployed $SERVICE on EC2 (${matrix.service.host})"
+
