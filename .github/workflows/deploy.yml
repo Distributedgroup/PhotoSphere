@@ -3,7 +3,7 @@ name: Deploy Microservices
 on:
   push:
     branches:
-      - main  # Se ejecuta en la rama main
+      - dev  # Se ejecuta en la rama main
   workflow_dispatch:  # Permite ejecución manual desde GitHub Actions
 
 jobs:
