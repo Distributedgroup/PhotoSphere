@@ -57,7 +57,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          cd ${{ matrix.service }}
+          cd UserDomain/${{ matrix.service }}  # ✅ Agregar 'UserDomain/'
           IMAGE_NAME=$(echo "${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
           docker build -t $IMAGE_NAME:latest .
           docker push $IMAGE_NAME:latest
