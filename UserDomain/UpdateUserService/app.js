@@ -61,7 +61,7 @@ app.post("/api/notify", async (req, res) => {
         return res.status(400).json({ message: "Error: userId not received" });
     }
 
-    res.status(200).json({ message: "Notification received successfully" })
+    res.status(200).json({ message: "Notification received successfully" });
 });
 
 module.exports = app;
