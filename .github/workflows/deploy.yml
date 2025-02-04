@@ -1,96 +1,57 @@
-name: Deploy Microservices
+name: CI/CD for Microservices
 
 on:
   push:
     branches:
-      - dev  # Se ejecuta en la rama main
-  workflow_dispatch:  # Permite ejecución manual desde GitHub Actions
+      - dev
+    paths:
+      - 'domain1/microservice1/**'
+      - 'domain1/microservice2/**'
+      - 'domain2/microservice3/**'
+      - 'domain2/microservice4/**'
+      - 'domain3/microservice5/**'
+      - 'domain3/microservice6/**'
 
 jobs:
-  detect-changes:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    outputs:
-      services: ${{ steps.filter.outputs.services }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Asegura que se obtiene todo el historial para detectar cambios
-
-      - name: Detect changed microservices
-        id: filter
-        run: |
-          CHANGED=$(git diff --name-only HEAD^ HEAD | cut -d'/' -f1,2 | sort -u)
-          SERVICES=""
-          for dir in $CHANGED; do
-            if [[ -f "$dir/Dockerfile" ]]; then
-              SERVICES="$SERVICES $dir"
-            fi
-          done
-          echo "Detected changes in: $SERVICES"
-          echo "services=$(echo $SERVICES | jq -R -s -c 'split(\" \") | map(select(. != \"\"))')" >> $GITHUB_OUTPUT
-
-      - name: Debug Detected Services
-        run: echo "Services detected:${{ steps.filter.outputs.services }}"
-
-  deploy:
-    needs: detect-changes
-    runs-on: ubuntu-latest
-    if: ${{ needs.detect-changes.outputs.services != '[]' }}
     strategy:
       matrix:
-        service: ${{ fromJSON(needs.detect-changes.outputs.services || '[]') }}  # ✅ Evita error en fromJSON
-
+        service: [
+          { name: 'microservice1', path: 'domain1/microservice1', ec2_host: '${{ secrets.EC2_HOST_1 }}' },
+          { name: 'microservice2', path: 'domain1/microservice2', ec2_host: '${{ secrets.EC2_HOST_2 }}' },
+          { name: 'microservice3', path: 'domain2/microservice3', ec2_host: '${{ secrets.EC2_HOST_3 }}' },
+          { name: 'microservice4', path: 'domain2/microservice4', ec2_host: '${{ secrets.EC2_HOST_4 }}' },
+          { name: 'microservice5', path: 'domain3/microservice5', ec2_host: '${{ secrets.EC2_HOST_5 }}' },
+          { name: 'microservice6', path: 'domain3/microservice6', ec2_host: '${{ secrets.EC2_HOST_6 }}' }
+        ]
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Debug Changed Services
-        run: echo "Services to deploy:${{ matrix.service }}"
-
-      - name: Login to DockerHub
-        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
-      - name: Normalize Service Name
+      - name: Detect changes
+        id: check_changes
         run: |
-          SERVICE_PATH="${{ matrix.service }}"
-          SERVICE_NAME=$(basename "$SERVICE_PATH")  # Extrae el nombre del microservicio
-          DOMAIN_NAME=$(dirname "$SERVICE_PATH")    # Extrae el dominio (UserDomain, PostDomain, etc.)
-          SERVICE_NAME_LOWER=$(echo "$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')  # Convierte a minúsculas
-
-          echo "SERVICE_PATH=$SERVICE_PATH" >> $GITHUB_ENV
-          echo "SERVICE_NAME=$SERVICE_NAME_LOWER" >> $GITHUB_ENV
-          echo "DOMAIN_NAME=$DOMAIN_NAME" >> $GITHUB_ENV
-
-      - name: Debug Normalized Names
-        run: |
-          echo "Deploying service: $SERVICE_NAME"
-          echo "Domain: $DOMAIN_NAME"
-          echo "Docker Image: ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE_NAME"
-
-      - name: Build and Push Docker Image
-        run: |
-          if [ ! -d "$SERVICE_PATH" ]; then
-            echo "Error: Directory $SERVICE_PATH does not exist!"
-            exit 1
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "${{ matrix.service.path }}"; then
+            echo "CHANGED=true" >> $GITHUB_ENV
+          else
+            echo "CHANGED=false" >> $GITHUB_ENV
           fi
-          cd "$SERVICE_PATH"
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE_NAME:latest .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE_NAME:latest
+
+      - name: Build and push Docker image
+        if: env.CHANGED == 'true'
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.name }}:latest ${{ matrix.service.path }}
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.name }}:latest
 
       - name: Deploy to EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          HOST: ${{ secrets[format('EC2_HOST_{0}', env.SERVICE_NAME)] }}
-          USER: ${{ secrets.EC2_USER }}
+        if: env.CHANGED == 'true'
         run: |
-          echo "$PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
-          
-          ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST << 'EOF'
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE_NAME:latest
-            docker stop $SERVICE_NAME || true
-            docker rm $SERVICE_NAME || true
-            docker run -d --name $SERVICE_NAME -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE_NAME:latest
-            docker system prune -f
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ matrix.service.ec2_host }} << 'EOF'
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.name }}:latest
+            docker stop ${{ matrix.service.name }} || true
+            docker rm ${{ matrix.service.name }} || true
+            docker run -d --name ${{ matrix.service.name }} -p 80:80 ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.name }}:latest
           EOF
