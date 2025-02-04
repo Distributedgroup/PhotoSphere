@@ -40,11 +40,17 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.services != '' }}
     strategy:
-      matrix:
-        service: ${{ fromJSON('["CreateUserService", "GetUserService", "LoginUserService"]') }}
+        matrix:
+          service: ${{ fromJSON(needs.detect-changes.outputs.services) }}
+
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+            # 🔹 Agregar este paso antes de construir la imagen
+      - name: Debug Changed Services
+        run: echo "Services to deploy:${{ needs.detect-changes.outputs.services }}"
 
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
