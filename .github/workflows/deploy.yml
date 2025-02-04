@@ -3,7 +3,7 @@ name: Deploy CreateUserService
 on:
   push:
     branches:
-      - main
+      - dev
     paths:
       - '**'  # Se activará cuando haya cambios en cualquier archivo
 
