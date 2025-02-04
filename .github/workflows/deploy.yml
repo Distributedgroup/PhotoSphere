@@ -5,26 +5,18 @@ on:
     branches:
       - dev
     paths:
-      - 'domain1/microservice1/**'
-      - 'domain1/microservice2/**'
-      - 'domain2/microservice3/**'
-      - 'domain2/microservice4/**'
-      - 'domain3/microservice5/**'
-      - 'domain3/microservice6/**'
+      - 'UserDomain/**'
+      - 'PostDomain/**'
+      - 'StoryDomain/**'
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [
-          { name: 'microservice1', path: 'domain1/microservice1', ec2_host: '${{ secrets.EC2_HOST_1 }}' },
-          { name: 'microservice2', path: 'domain1/microservice2', ec2_host: '${{ secrets.EC2_HOST_2 }}' },
-          { name: 'microservice3', path: 'domain2/microservice3', ec2_host: '${{ secrets.EC2_HOST_3 }}' },
-          { name: 'microservice4', path: 'domain2/microservice4', ec2_host: '${{ secrets.EC2_HOST_4 }}' },
-          { name: 'microservice5', path: 'domain3/microservice5', ec2_host: '${{ secrets.EC2_HOST_5 }}' },
-          { name: 'microservice6', path: 'domain3/microservice6', ec2_host: '${{ secrets.EC2_HOST_6 }}' }
-        ]
+        service_name: [ "acceptdenyinvitationservice", "createuserservice", "getcoverimageservice", "getuserinvitationsservice", "getuserrandom", "getuserservice", "getuserusernameservice", "getusersservice", "loginuserservice", "resetpasswordservice" ]
+        service_path: [ "UserDomain/AcceptDenyInvitationService", "UserDomain/CreateUserService", "UserDomain/GetCoverImageService", "UserDomain/GetUserInvitationsService", "UserDomain/GetUserRandom", "UserDomain/GetUserService", "UserDomain/GetUserUsernameService", "UserDomain/GetUsersService", "UserDomain/LoginUserService", "UserDomain/ResetPasswordService" ]
+        ec2_host: [ "${{ secrets.EC2_HOST_1 }}", "${{ secrets.EC2_HOST_2 }}", "${{ secrets.EC2_HOST_3 }}", "${{ secrets.EC2_HOST_4 }}", "${{ secrets.EC2_HOST_5 }}", "${{ secrets.EC2_HOST_6 }}", "${{ secrets.EC2_HOST_7 }}", "${{ secrets.EC2_HOST_8 }}", "${{ secrets.EC2_HOST_9 }}", "${{ secrets.EC2_HOST_10 }}" ]
     
     steps:
       - name: Checkout repository
@@ -33,7 +25,7 @@ jobs:
       - name: Detect changes
         id: check_changes
         run: |
-          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "${{ matrix.service.path }}"; then
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "${{ matrix.service_path }}"; then
             echo "CHANGED=true" >> $GITHUB_ENV
           else
             echo "CHANGED=false" >> $GITHUB_ENV
@@ -42,16 +34,16 @@ jobs:
       - name: Build and push Docker image
         if: env.CHANGED == 'true'
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.name }}:latest ${{ matrix.service.path }}
+          docker build -t fernanyag20/${{ matrix.service_name }}:latest ${{ matrix.service_path }}
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.name }}:latest
+          docker push fernanyag20/${{ matrix.service_name }}:latest
 
       - name: Deploy to EC2
         if: env.CHANGED == 'true'
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ matrix.service.ec2_host }} << 'EOF'
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.name }}:latest
-            docker stop ${{ matrix.service.name }} || true
-            docker rm ${{ matrix.service.name }} || true
-            docker run -d --name ${{ matrix.service.name }} -p 80:80 ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.name }}:latest
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ matrix.ec2_host }} << 'EOF'
+            docker pull fernanyag20/${{ matrix.service_name }}:latest
+            docker stop ${{ matrix.service_name }} || true
+            docker rm ${{ matrix.service_name }} || true
+            docker run -d --name ${{ matrix.service_name }} -p 80:80 fernanyag20/${{ matrix.service_name }}:latest
           EOF
