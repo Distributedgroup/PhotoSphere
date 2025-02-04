@@ -20,11 +20,11 @@ jobs:
 
     - name: Construir imagen Docker
       run: |
-        cd UserDomain/CreateUserService
-        docker build -t fernanyag20/createuserservice:latest .
+        cd UserDomain/UpdateUserService
+        docker build -t fernanyag20/updateuserservice:latest .
 
     - name: Subir imagen a Docker Hub
-      run: docker push fernanyag20/createuserservice:latest
+      run: docker push fernanyag20/updateuserservice:latest
 
   deploy:
     needs: build
