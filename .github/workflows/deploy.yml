@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service_name: [ "createuserservice", "getcoverimageservice", "getuserinvitationsservice", "getuserrandom", "getuserservice", "getuserusernameservice", "getusersservice", "loginuserservice", "resetpasswordservice" ]
-        service_path: [ "UserDomain/AcceptDenyInvitationService", "UserDomain/CreateUserService", "UserDomain/GetCoverImageService", "UserDomain/GetUserInvitationsService", "UserDomain/GetUserRandom", "UserDomain/GetUserService", "UserDomain/GetUserUsernameService", "UserDomain/GetUsersService", "UserDomain/LoginUserService", "UserDomain/ResetPasswordService" ]
+        service_name: [ "createuserservice" ]
+        service_path: [ "UserDomain/CreateUserService" ]
         ec2_host: [ "${{ secrets.EC2_HOST_2 }}"]
     
     steps:
