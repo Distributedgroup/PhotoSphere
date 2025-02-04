@@ -58,7 +58,7 @@ app.post("/api/notify", async (req, res) => {
     console.log("🔔 Notification received from CreateUserService:", req.body);
 
     if (!req.body.userId) {
-        return res.status(400).json({ message: "Error: userId not received" })
+        return res.status(400).json({ message: "Error: userId not received" });
     }
 
     res.status(200).json({ message: "Notification received successfully" });
