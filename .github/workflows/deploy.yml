@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service_name: [ "acceptdenyinvitationservice", "createuserservice", "getcoverimageservice", "getuserinvitationsservice", "getuserrandom", "getuserservice", "getuserusernameservice", "getusersservice", "loginuserservice", "resetpasswordservice" ]
+        service_name: [ "createuserservice", "getcoverimageservice", "getuserinvitationsservice", "getuserrandom", "getuserservice", "getuserusernameservice", "getusersservice", "loginuserservice", "resetpasswordservice" ]
         service_path: [ "UserDomain/AcceptDenyInvitationService", "UserDomain/CreateUserService", "UserDomain/GetCoverImageService", "UserDomain/GetUserInvitationsService", "UserDomain/GetUserRandom", "UserDomain/GetUserService", "UserDomain/GetUserUsernameService", "UserDomain/GetUsersService", "UserDomain/LoginUserService", "UserDomain/ResetPasswordService" ]
-        ec2_host: [ "${{ secrets.EC2_HOST_1 }}", "${{ secrets.EC2_HOST_2 }}", "${{ secrets.EC2_HOST_3 }}", "${{ secrets.EC2_HOST_4 }}", "${{ secrets.EC2_HOST_5 }}", "${{ secrets.EC2_HOST_6 }}", "${{ secrets.EC2_HOST_7 }}", "${{ secrets.EC2_HOST_8 }}", "${{ secrets.EC2_HOST_9 }}", "${{ secrets.EC2_HOST_10 }}" ]
+        ec2_host: [ "${{ secrets.EC2_HOST_2 }}"]
     
     steps:
       - name: Checkout repository
