@@ -15,7 +15,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # 🔹 Obtiene todo el historial de commits
+          fetch-depth: 0  # Obtiene todo el historial
+
+      - name: Fetch all history
+        run: git fetch --all  # 🔥 Esto asegura que tenemos todo el historial para git diff
 
 
       - name: Detect changed microservices
