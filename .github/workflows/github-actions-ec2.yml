@@ -42,6 +42,11 @@ jobs:
 
           echo "::set-output name=services::$SERVICES"
 
+      - name: Debug changed services
+        run: |
+          echo "🔍 Services detected: '${{ steps.filter.outputs.services }}'"
+
+
   build-and-push:
     needs: detect-changes
     if: ${{ needs.detect-changes.outputs.services && needs.detect-changes.outputs.services != '[]' }}
