@@ -3,8 +3,8 @@ name: Deploy Microservices
 on:
   push:
     branches:
-      - dev
-  workflow_dispatch:
+      - dev # Se ejecuta en la rama main
+  workflow_dispatch:  # Permite ejecución manual desde GitHub Actions
 
 jobs:
   detect-changes:
@@ -15,67 +15,77 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Obtiene todo el historial
-
-      - name: Fetch all history
-        run: git fetch --all  # 🔥 Esto asegura que tenemos todo el historial para git diff
-
+          fetch-depth: 0  # Asegura que se obtiene todo el historial para detectar cambios
 
       - name: Detect changed microservices
         id: filter
         run: |
-          CHANGED=$(git diff --name-only --diff-filter=d HEAD^ HEAD | cut -d'/' -f2 | sort -u)
+          CHANGED=$(git diff --name-only HEAD^ HEAD | cut -d'/' -f1,2 | sort -u)
           SERVICES=""
           for dir in $CHANGED; do
-            if [[ -f "UserDomain/$dir/Dockerfile" ]]; then
-              SERVICES="$SERVICES UserDomain/$dir"
+            if [[ -f "$dir/Dockerfile" ]]; then
+              SERVICES="$SERVICES $dir"
             fi
           done
           echo "Detected changes in: $SERVICES"
-          echo "services=$SERVICES" >> $GITHUB_OUTPUT
+          echo "services=$(echo $SERVICES | jq -R -s -c 'split(" ") | map(select(. != ""))')" >> $GITHUB_OUTPUT
 
+      - name: Debug Detected Services
+        run: echo "Services detected:${{ steps.filter.outputs.services }}"
 
   deploy:
     needs: detect-changes
     runs-on: ubuntu-latest
-    if: ${{ needs.detect-changes.outputs.services != '' }}
+    if: ${{ needs.detect-changes.outputs.services != '[]' }}
     strategy:
-        matrix:
-          service: ${{ fromJSON(needs.detect-changes.outputs.services) }}
-
+      matrix:
+        service: ${{ fromJSON(needs.detect-changes.outputs.services) }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-            # 🔹 Agregar este paso antes de construir la imagen
       - name: Debug Changed Services
-        run: echo "Services to deploy:${{ needs.detect-changes.outputs.services }}"
+        run: echo "Services to deploy:${{ matrix.service }}"
 
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+      - name: Normalize Service Name
+        run: |
+          SERVICE_PATH=${{ matrix.service }}
+          SERVICE_NAME=$(basename $SERVICE_PATH) # Extrae el nombre del microservicio
+          DOMAIN_NAME=$(dirname $SERVICE_PATH) # Extrae el dominio (UserDomain, PostDomain, etc.)
+          SERVICE_NAME_LOWER=$(echo "$SERVICE_NAME" | tr '[:upper:]' '[:lower:]') # Convierte a minúsculas
+          echo "SERVICE_NAME=$SERVICE_NAME_LOWER" >> $GITHUB_ENV
+          echo "SERVICE_PATH=$SERVICE_PATH" >> $GITHUB_ENV
+          echo "DOMAIN_NAME=$DOMAIN_NAME" >> $GITHUB_ENV
+
+      - name: Debug Normalized Names
+        run: |
+          echo "Deploying service: $SERVICE_NAME"
+          echo "Domain: $DOMAIN_NAME"
+          echo "Docker Image: ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE_NAME"
+
       - name: Build and Push Docker Image
         run: |
-          cd UserDomain/${{ matrix.service }}  # ✅ Agregar 'UserDomain/'
-          IMAGE_NAME=$(echo "${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
-          docker build -t $IMAGE_NAME:latest .
-          docker push $IMAGE_NAME:latest
-
+          cd $SERVICE_PATH
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE_NAME:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE_NAME:latest
 
       - name: Deploy to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          HOST: ${{ secrets[format('EC2_HOST_{0}', matrix.service)] }}
+          HOST: ${{ secrets[format('EC2_HOST_{0}', env.SERVICE_NAME)] }}
           USER: ${{ secrets.EC2_USER }}
         run: |
           echo "$PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
           
           ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST << 'EOF'
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}:latest
-            docker stop ${{ matrix.service }} || true
-            docker rm ${{ matrix.service }} || true
-            docker run -d --name ${{ matrix.service }} -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE_NAME:latest
+            docker stop $SERVICE_NAME || true
+            docker rm $SERVICE_NAME || true
+            docker run -d --name $SERVICE_NAME -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE_NAME:latest
             docker system prune -f
           EOF
