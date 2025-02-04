@@ -41,4 +41,4 @@ jobs:
           docker pull fernanyag20/createuserservice:latest
           docker stop createuserservice || true
           docker rm createuserservice || true
-          docker run -d --name createuserservice -p 3000:3000 fernanyag20/createuserservice:latest
+          docker run -d --name createuserservice -p 5050:5050 fernanyag20/createuserservice:latest
