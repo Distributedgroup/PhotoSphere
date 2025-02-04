@@ -3,7 +3,7 @@ name: Deploy Microservices
 on:
   push:
     branches:
-      - dev # Se ejecuta en la rama main
+      - dev  # Se ejecuta en la rama main
   workflow_dispatch:  # Permite ejecución manual desde GitHub Actions
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
             fi
           done
           echo "Detected changes in: $SERVICES"
-          echo "services=$(echo $SERVICES | jq -R -s -c 'split(" ") | map(select(. != ""))')" >> $GITHUB_OUTPUT
+          echo "services=$(echo $SERVICES | jq -R -s -c 'split(\" \") | map(select(. != \"\"))')" >> $GITHUB_OUTPUT
 
       - name: Debug Detected Services
         run: echo "Services detected:${{ steps.filter.outputs.services }}"
@@ -53,12 +53,13 @@ jobs:
 
       - name: Normalize Service Name
         run: |
-          SERVICE_PATH=${{ matrix.service }}
-          SERVICE_NAME=$(basename $SERVICE_PATH) # Extrae el nombre del microservicio
-          DOMAIN_NAME=$(dirname $SERVICE_PATH) # Extrae el dominio (UserDomain, PostDomain, etc.)
-          SERVICE_NAME_LOWER=$(echo "$SERVICE_NAME" | tr '[:upper:]' '[:lower:]') # Convierte a minúsculas
-          echo "SERVICE_NAME=$SERVICE_NAME_LOWER" >> $GITHUB_ENV
+          SERVICE_PATH="${{ matrix.service }}"
+          SERVICE_NAME=$(basename "$SERVICE_PATH")  # Extrae el nombre del microservicio
+          DOMAIN_NAME=$(dirname "$SERVICE_PATH")    # Extrae el dominio (UserDomain, PostDomain, etc.)
+          SERVICE_NAME_LOWER=$(echo "$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')  # Convierte a minúsculas
+
           echo "SERVICE_PATH=$SERVICE_PATH" >> $GITHUB_ENV
+          echo "SERVICE_NAME=$SERVICE_NAME_LOWER" >> $GITHUB_ENV
           echo "DOMAIN_NAME=$DOMAIN_NAME" >> $GITHUB_ENV
 
       - name: Debug Normalized Names
@@ -69,7 +70,11 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          cd $SERVICE_PATH
+          if [ ! -d "$SERVICE_PATH" ]; then
+            echo "Error: Directory $SERVICE_PATH does not exist!"
+            exit 1
+          fi
+          cd "$SERVICE_PATH"
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE_NAME:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE_NAME:latest
 
