@@ -47,6 +47,10 @@ const create_user = async function (req, res) {
         res.status(400).send({ message: 'Email already exists' });
     }
 };
+// Successfully export the function
+module.exports = {
+    create_user
+};
 
 
 
