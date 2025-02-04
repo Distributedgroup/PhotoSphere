@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Debug Changed Services
-        run: echo "Services to deploy: ${{ matrix.service }}"
+        run: echo "Services to deploy:${{ matrix.service }}"
 
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
