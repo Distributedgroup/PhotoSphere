@@ -4,7 +4,7 @@ var Usuario_amigo = require('../Model/User_friend');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var jwt = require('../helpers/jwt');
-const { uniqueUsernameGenerator } = require("unique-username-generator")
+const { uniqueUsernameGenerator } = require("unique-username-generator");
 
 var path = require('path');
 var fs = require('fs');
