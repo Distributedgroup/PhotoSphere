@@ -2,11 +2,10 @@ require("dotenv").config();
 var express = require("express");
 var mongoose = require("mongoose");
 var bodyparser = require("body-parser");
+var updateUserRoutes = require('./routes/updateUser');
+
 const { createServer } = require("http");
 const { Server } = require("socket.io");
-
-// Importar rutas del microservicio de actualización de usuarios
-const updateRoutes = require("./routes/updateUserRoutes");
 
 var app = express();
 const port = process.env.PORT || 5051;
@@ -16,7 +15,7 @@ app.use(bodyparser.urlencoded({ limit: "50mb", extended: true }));
 app.use(bodyparser.json({ limit: "50mb", extended: true }));
 app.use(express.json());
 
-// Configuración de CORS
+// Configure CORS
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
@@ -28,19 +27,10 @@ app.use((req, res, next) => {
     next();
 });
 
-// Agregar rutas del microservicio
-app.use("/api", updateRoutes); // Prefijo /api para todas las rutas del microservicio
-
-// Configuración del servidor con Socket.io antes de conectar a MongoDB
-const httpServer = createServer(app);
-const io = new Server(httpServer);
-
-io.on("connection", (socket) => {
-    console.log("✅ Socket connected in UpdateUserService");
-});
-
-// Conexión a MongoDB en Docker dentro de EC2
+// **Connecting to MongoDB in Docker inside EC2**
 const MONGO_URI = process.env.MONGO_URI || "mongodb://52.1.158.25:27017/userservice";
+
+app.use('/api', updateUserRoutes);
 
 mongoose
     .connect(MONGO_URI, {
@@ -50,16 +40,24 @@ mongoose
     .then(() => {
         console.log("✅ UpdateUserService connected to MongoDB on EC2");
 
-        // Iniciar servidor solo después de conectar a la base de datos
+        // **Start Server only after connecting to database**
         httpServer.listen(port, function () {
-            console.log(`✅ UpdateUserService running on port ${port}`);
+            console.log("✅ UpdateUserService running on port " + port);
         });
     })
     .catch((err) => {
         console.error("❌ Error connecting to MongoDB:", err);
     });
 
-// Ruta para recibir notificaciones del microservicio CreateUserService
+// **Setting up Server with Socket.io**
+const httpServer = createServer(app);
+const io = new Server(httpServer);
+
+io.on("connection", (socket) => {
+    console.log("✅ Socket connected in UpdateUserService");
+});
+
+// **Route to receive notifications from CreateUserService**
 app.post("/api/notify", async (req, res) => {
     console.log("🔔 Notification received from CreateUserService:", req.body);
 
