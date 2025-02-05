@@ -25,6 +25,14 @@ app.use((req, res, next) => {
     next();
 });
 
+// **Setting up Server with Socket.io BEFORE MongoDB connection**
+const httpServer = createServer(app);
+const io = new Server(httpServer);
+
+io.on("connection", (socket) => {
+    console.log("✅ Socket connected in UpdateUserService");
+});
+
 // **Connecting to MongoDB in Docker inside EC2**
 const MONGO_URI = process.env.MONGO_URI || "mongodb://52.1.158.25:27017/userservice";
 
@@ -44,14 +52,6 @@ mongoose
     .catch((err) => {
         console.error("❌ Error connecting to MongoDB:", err);
     });
-
-// **Setting up Server with Socket.io**
-const httpServer = createServer(app);
-const io = new Server(httpServer);
-
-io.on("connection", (socket) => {
-    console.log("✅ Socket connected in UpdateUserService");
-});
 
 // **Route to receive notifications from CreateUserService**
 app.post("/api/notify", async (req, res) => {
