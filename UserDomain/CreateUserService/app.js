@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 });
 
 // **Connecting to MongoDB in Docker inside EC2**
-const MONGO_URI = process.env.MONGO_URI || "MONGO_URI=mongodb://35.175.244.91:27017/userservice";
+const MONGO_URI = process.env.MONGO_URI || "MONGO_URI=mongodb://52.1.158.25:27017/userservice";
 
 mongoose
     .connect(MONGO_URI, {
