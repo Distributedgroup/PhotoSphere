@@ -11,7 +11,7 @@ var fs = require('fs');
 var handlebars = require('handlebars');
 var ejs = require('ejs');
 var nodemailer = require('nodemailer');
-var smtp = require('nodemailer-smtp-transport')
+var smtp = require('nodemailer-smtp-transport');
 
 const create_user = async function (req, res) {
     console.log(req.body);
