@@ -5,6 +5,9 @@ var bodyparser = require("body-parser");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 
+// Importar rutas del microservicio de actualización de usuarios
+const updateRoutes = require("./routes/updateUserRoutes");
+
 var app = express();
 const port = process.env.PORT || 5051;
 
@@ -13,7 +16,7 @@ app.use(bodyparser.urlencoded({ limit: "50mb", extended: true }));
 app.use(bodyparser.json({ limit: "50mb", extended: true }));
 app.use(express.json());
 
-// Configure CORS
+// Configuración de CORS
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
@@ -25,7 +28,10 @@ app.use((req, res, next) => {
     next();
 });
 
-// **Setting up Server with Socket.io BEFORE MongoDB connection**
+// Agregar rutas del microservicio
+app.use("/api", updateRoutes); // Prefijo /api para todas las rutas del microservicio
+
+// Configuración del servidor con Socket.io antes de conectar a MongoDB
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
@@ -33,7 +39,7 @@ io.on("connection", (socket) => {
     console.log("✅ Socket connected in UpdateUserService");
 });
 
-// **Connecting to MongoDB in Docker inside EC2**
+// Conexión a MongoDB en Docker dentro de EC2
 const MONGO_URI = process.env.MONGO_URI || "mongodb://52.1.158.25:27017/userservice";
 
 mongoose
@@ -44,16 +50,16 @@ mongoose
     .then(() => {
         console.log("✅ UpdateUserService connected to MongoDB on EC2");
 
-        // **Start Server only after connecting to database**
+        // Iniciar servidor solo después de conectar a la base de datos
         httpServer.listen(port, function () {
-            console.log("✅ UpdateUserService running on port " + port);
+            console.log(`✅ UpdateUserService running on port ${port}`);
         });
     })
     .catch((err) => {
         console.error("❌ Error connecting to MongoDB:", err);
     });
 
-// **Route to receive notifications from CreateUserService**
+// Ruta para recibir notificaciones del microservicio CreateUserService
 app.post("/api/notify", async (req, res) => {
     console.log("🔔 Notification received from CreateUserService:", req.body);
 
