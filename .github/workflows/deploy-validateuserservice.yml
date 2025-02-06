@@ -25,7 +25,7 @@ jobs:
         cd UserDomain/ValidateUserService
         ls -la  # Verificar si existe Dockerfile
         docker build -t alevm98/validateuserservice:latest .
-        docker images | grep validateuserservice || echo "🚨 Imagen no encontrada localmente"
+        docker images | grep validateuserservice || echo " Imagen no encontrada localmente"
 
     - name: Subir imagen a Docker Hub
       run: |
