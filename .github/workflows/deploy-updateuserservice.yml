@@ -2,8 +2,6 @@ name: Deploy UpdateUserService
 
 on:
   push:
-    paths:
-      - 'UserDomain/UpdateUserService/**'  # Solo detecta cambios en esta carpeta
     branches:
       - dev
 
@@ -15,30 +13,46 @@ jobs:
     - name: Checkout código
       uses: actions/checkout@v4
 
-    - name: Iniciar sesión en Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+    - name: Forzar autenticación en Docker Hub
+      run: |
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin || exit 1
+        docker logout
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Construir imagen Docker
       run: |
         cd UserDomain/UpdateUserService
         docker build -t fernanyag20/updateuserservice:latest .
+        docker images | grep createuserservice || echo "🚨 Imagen no encontrada localmente"
 
     - name: Subir imagen a Docker Hub
-      run: docker push fernanyag20/updateuserservice:latest
+      run: | 
+        docker push fernanyag20/updateuserservice:latest
+        echo "✅ Imagen subida a Docker Hub"
+      
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-    - name: Conectar a EC2 y actualizar contenedor
-      uses: appleboy/ssh-action@v0.1.10
-      with:
-        host: ${{ secrets.EC2_HOST_USERDOMAIN }}
-        username: ubuntu
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          docker pull fernanyag20/updateuserservice:latest
-          docker stop updateuserservice || true
-          docker rm udpateuserservice || true
-          docker run -d --name updateuserservice -p 5051:5051 fernanyag20/updateuserservice:latest
+      - name: Iniciar sesión en Docker Hub en EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST_USERDOMAIN}}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Conectar a EC2 y actualizar contenedor
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST_USERDOMAIN }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull fernanyag20/updateuserservice:latest || echo "🚨 Error al hacer pull de la imagen"
+            docker stop updateuserservice || true
+            docker rm udpateuserservice || true
+            docker run -d --name updateuserservice -p 5051:5051 fernanyag20/updateuserservice:latest
