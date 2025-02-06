@@ -1,0 +1,44 @@
+name: Deploy UpdateUserService
+
+on:
+  push:
+    paths:
+      - 'UserDomain/LoginUserService/**'  # Solo detecta cambios en esta carpeta
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+
+    - name: Iniciar sesión en Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORDAV }}" | docker login -u "${{ secrets.DOCKER_USERNAMEAV }}" --password-stdin
+
+    - name: Construir imagen Docker
+      run: |
+        cd UserDomain/LoginUserService
+        docker build -t alevm98/loginuserservice:latest .
+
+    - name: Subir imagen a Docker Hub
+      run: docker push alevm98/loginuserservice:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Conectar a EC2 y actualizar contenedor
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST_USERDOMAIN }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker pull alevm98/loginuserservice:latest
+          docker stop loginuserservice || true
+          docker rm loginuserservice || true
+          docker run -d --name loginuserservice -p 5052:5052 alevm98/loginuserservice:latest
