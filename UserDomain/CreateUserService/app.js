@@ -59,7 +59,7 @@ io.on("connection", (socket) => {
 const User = require("./Model/User");
 
 // **Create user in MongoDB with email validation and password encryption**
-app.post("/api/users", async (req, res) => {
+app.post("/api/create_user", async (req, res) => {
     try {
         const { names, surnames, email, password, profession, description } = req.body;
 
