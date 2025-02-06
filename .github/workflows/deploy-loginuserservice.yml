@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - dev
+    paths:
+      - 'UserDomain/LoginUserService/**'
 
 jobs:
   build:
