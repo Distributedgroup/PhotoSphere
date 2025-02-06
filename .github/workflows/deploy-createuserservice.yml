@@ -2,8 +2,6 @@ name: Deploy CreateUserService
 
 on:
   push:
-    paths:
-      - 'UserDomain/CreateUserService/**'  # Solo detecta cambios en esta carpeta
     branches:
       - dev
 
@@ -14,31 +12,46 @@ jobs:
     steps:
     - name: Checkout código
       uses: actions/checkout@v4
-
-    - name: Iniciar sesión en Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
+      
+    - name: Forzar autenticación en Docker Hub
+      run: |
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin || exit 1
+        docker logout
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        
     - name: Construir imagen Docker
       run: |
         cd UserDomain/CreateUserService
         docker build -t fernanyag20/createuserservice:latest .
+        docker images | grep createuserservice || echo "🚨 Imagen no encontrada localmente"
 
     - name: Subir imagen a Docker Hub
-      run: docker push fernanyag20/createuserservice:latest
+      run: | 
+        docker push fernanyag20/createuserservice:latest
+        echo "✅ Imagen subida a Docker Hub"
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-    - name: Conectar a EC2 y actualizar contenedor
+    - name: Iniciar sesión en Docker Hub en EC2
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.EC2_HOST_USERDOMAIN}}
         username: ubuntu
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          docker pull fernanyag20/createuserservice:latest
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Conectar a EC2 y actualizar contenedor
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST_USERDOMAIN }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker pull fernanyag20/createuserservice:latest || echo "🚨 Error al hacer pull de la imagen"
           docker stop createuserservice || true
           docker rm createuserservice || true
           docker run -d --name createuserservice -p 5050:5050 fernanyag20/createuserservice:latest
