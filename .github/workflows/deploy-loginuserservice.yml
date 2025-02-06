@@ -13,8 +13,12 @@ jobs:
     - name: Checkout código
       uses: actions/checkout@v4
 
-    - name: Iniciar sesión en Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORDAV }}" | docker login -u "${{ secrets.DOCKER_USERNAMEAV }}" --password-stdin || echo "🚨 Error en Docker Login"
+    - name: Forzar autenticación en Docker Hub
+      run: |
+        echo "${{ secrets.DOCKER_PASSWORDAV }}" | docker login -u "${{ secrets.DOCKER_USERNAMEAV }}" --password-stdin || exit 1
+        docker logout
+        echo "${{ secrets.DOCKER_PASSWORDAV }}" | docker login -u "${{ secrets.DOCKER_USERNAMEAV }}" --password-stdin
+
 
     - name: Construir imagen Docker
       run: |
