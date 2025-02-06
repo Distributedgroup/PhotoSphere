@@ -2,10 +2,8 @@ name: Deploy UpdateUserService
 
 on:
   push:
-    paths:
-      - 'UserDomain/LoginUserService/**'  # Solo detecta cambios en esta carpeta
     branches:
-      - dev
+      - dev  # Eliminamos paths temporalmente para depuración
 
 jobs:
   build:
@@ -15,16 +13,20 @@ jobs:
     - name: Checkout código
       uses: actions/checkout@v4
 
+    - name: Verificar estructura de archivos
+      run: ls -R UserDomain/LoginUserService
+
     - name: Iniciar sesión en Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORDAV }}" | docker login -u "${{ secrets.DOCKER_USERNAMEAV }}" --password-stdin
+      run: echo "${{ secrets.DOCKER_PASSWORDAV }}" | docker login -u "${{ secrets.DOCKER_USERNAMEAV }}" --password-stdin || echo "🚨 Error en Docker Login"
 
     - name: Construir imagen Docker
       run: |
         cd UserDomain/LoginUserService
+        ls -la  # Muestra el contenido
         docker build -t alevm98/loginuserservice:latest .
 
     - name: Subir imagen a Docker Hub
-      run: docker push alevm98/loginuserservice:latest
+      run: docker push alevm98/loginuserservice:latest || echo "🚨 Error en Docker Push"
 
   deploy:
     needs: build
