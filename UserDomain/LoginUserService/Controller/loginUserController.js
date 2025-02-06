@@ -1,3 +1,7 @@
+const User = require('../Model/user');  
+const bcrypt = require('bcryptjs');
+const jwt = require('../helpers/jwt');  
+
 const login_user = async function(req,res){
     console.log(req.body);
     let data = req.body;
