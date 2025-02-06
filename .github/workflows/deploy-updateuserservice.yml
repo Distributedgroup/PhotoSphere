@@ -23,7 +23,7 @@ jobs:
       run: |
         cd UserDomain/UpdateUserService
         docker build -t fernanyag20/updateuserservice:latest .
-        docker images | grep createuserservice || echo "🚨 Imagen no encontrada localmente"
+        docker images | grep updateuserservice || echo "🚨 Imagen no encontrada localmente"
 
     - name: Subir imagen a Docker Hub
       run: | 
