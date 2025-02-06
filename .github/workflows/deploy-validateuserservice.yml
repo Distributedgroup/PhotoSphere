@@ -56,4 +56,4 @@ jobs:
           docker pull alevm98/validateuserservice:latest || echo "🚨 Error al hacer pull de la imagen"
           docker stop validateuserservice || true
           docker rm validateuserservice || true
-          docker run -d --name validateuserservice -p 5052:5052 alevm98/validateuserservice:latest
+          docker run -d --name validateuserservice -p 5053:5053 alevm98/validateuserservice:latest
