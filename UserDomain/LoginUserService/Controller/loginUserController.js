@@ -1,5 +1,5 @@
 var User = require('../Model/User');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('../helpers/jwt');
 
 const login_user = async function(req,res){
