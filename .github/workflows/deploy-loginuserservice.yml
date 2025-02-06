@@ -1,4 +1,4 @@
-name: Deploy UpdateUserService
+name: Deploy LoginUserService
 
 on:
   push:
