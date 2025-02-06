@@ -3,7 +3,7 @@ name: Deploy UpdateUserService
 on:
   push:
     branches:
-      - dev  # Eliminamos paths temporalmente para depuración
+      - dev
 
 jobs:
   build:
@@ -13,26 +13,35 @@ jobs:
     - name: Checkout código
       uses: actions/checkout@v4
 
-    - name: Verificar estructura de archivos
-      run: ls -R UserDomain/LoginUserService
-
     - name: Iniciar sesión en Docker Hub
       run: echo "${{ secrets.DOCKER_PASSWORDAV }}" | docker login -u "${{ secrets.DOCKER_USERNAMEAV }}" --password-stdin || echo "🚨 Error en Docker Login"
 
     - name: Construir imagen Docker
       run: |
         cd UserDomain/LoginUserService
-        ls -la  # Muestra el contenido
+        ls -la  # Verificar si existe Dockerfile
         docker build -t alevm98/loginuserservice:latest .
+        docker images | grep loginuserservice || echo "🚨 Imagen no encontrada localmente"
 
     - name: Subir imagen a Docker Hub
-      run: docker push alevm98/loginuserservice:latest || echo "🚨 Error en Docker Push"
+      run: |
+        docker push alevm98/loginuserservice:latest
+        echo "✅ Imagen subida a Docker Hub"
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
+    - name: Iniciar sesión en Docker Hub en EC2
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST_USERDOMAIN }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          echo "${{ secrets.DOCKER_PASSWORDAV }}" | docker login -u "${{ secrets.DOCKER_USERNAMEAV }}" --password-stdin
+
     - name: Conectar a EC2 y actualizar contenedor
       uses: appleboy/ssh-action@v0.1.10
       with:
@@ -40,7 +49,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          docker pull alevm98/loginuserservice:latest
+          docker pull alevm98/loginuserservice:latest || echo "🚨 Error al hacer pull de la imagen"
           docker stop loginuserservice || true
           docker rm loginuserservice || true
           docker run -d --name loginuserservice -p 5052:5052 alevm98/loginuserservice:latest
