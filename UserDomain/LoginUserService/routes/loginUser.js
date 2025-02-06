@@ -6,6 +6,6 @@ var path = multiparty({uploadDir:'./uploads/stories'});
 
 var app = express.Router();
 
-app.post('/login_user', loginUserController.login_user);
+app.post('/login_user', loginUserController.login_user)
 
 module.exports = app;
