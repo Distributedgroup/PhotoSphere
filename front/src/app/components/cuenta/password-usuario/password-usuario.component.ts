@@ -20,7 +20,7 @@ export class PasswordUsuarioComponent implements OnInit {
   public error_msm = '';
 
   constructor(
-    private _UserService:UserService,
+    private _userService:UserService,
     private _router:Router
   ) { }
 
@@ -80,7 +80,7 @@ export class PasswordUsuarioComponent implements OnInit {
     }else{
       this.error_msm = '';
       console.log(this.password_nueva);
-      this._UserService.update_password(this.user._id,{
+      this._userService.update_password(this.user._id,{
         password_actual: this.password_actual,
         password_nueva: this.password_nueva
       },this.token).subscribe(
