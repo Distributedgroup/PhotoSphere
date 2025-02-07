@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HistoriaService } from 'src/app/services/historia.service';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UserService } from 'src/app/services/user.service';
 declare var e:any;
 import { io } from "socket.io-client";
 import { GLOBAL } from 'src/app/services/GLOBAL';
@@ -26,7 +26,7 @@ export class CardHistoriasComponent implements OnInit {
 
   constructor(
     private _historiaService:HistoriaService,
-    private _usuarioService:UsuarioService
+    private _UserService:UserService
   ) { 
 
   }
@@ -38,7 +38,7 @@ export class CardHistoriasComponent implements OnInit {
 
   init_historias(){
     this.load_historias = true;
-    this._usuarioService.obtener_historias_usuario(this.token).subscribe(
+    this._UserService.obtener_historias_usuario(this.token).subscribe(
       response=>{
         this.historias = response.data;
         setTimeout(() => {
