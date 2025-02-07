@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GLOBAL } from 'src/app/services/GLOBAL';
 import { PostService } from 'src/app/services/post.service';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-fotos-perfil',
@@ -21,7 +21,7 @@ export class FotosPerfilComponent implements OnInit {
   public fotos : Array<any> = [];
 
   constructor(
-    private _userService:UsuarioService,
+    private _userService:UserService,
     private _route:ActivatedRoute,
     private _postService:PostService
   ) { 
