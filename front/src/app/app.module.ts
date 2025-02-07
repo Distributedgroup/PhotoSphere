@@ -9,7 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { NavComponent } from './components/nav/nav.component';
-import { RegistroComponent } from './components/registro/registro.component';
+import { RegisterComponent } from './components/register/registercomponent';
 import { LoginComponent } from './components/login/login.component';
 import { SidebarUsuarioComponent } from './components/cuenta/sidebar-usuario/sidebar-usuario.component';
 import { ConfiguracionUsuarioComponent } from './components/cuenta/configuracion-usuario/configuracion-usuario.component';
@@ -20,7 +20,7 @@ import { InvitacionesUsuarioComponent } from './components/cuenta/invitaciones-u
 import { CardPerfilComponent } from './components/card-perfil/card-perfil.component';
 import { CardHistoriasComponent } from './components/card-historias/card-historias.component';
 import { CardUsuariosComponent } from './components/card-usuarios/card-usuarios.component';
-import { UsuariosComponent } from './components/usuarios/usuarios.component';
+import { UsersComponent } from './components/users/users.component';
 
 import {AutosizeModule} from 'ngx-autosize';
 import { PostDetailComponent } from './components/post-detail/post-detail.component';
@@ -35,7 +35,7 @@ import { WidgetsPerfilComponent } from './components/perfil/widgets-perfil/widge
     AppComponent,
     HomeComponent,
     NavComponent,
-    RegistroComponent,
+    RegisterComponent,
     LoginComponent,
     SidebarUsuarioComponent,
     ConfiguracionUsuarioComponent,
@@ -46,7 +46,7 @@ import { WidgetsPerfilComponent } from './components/perfil/widgets-perfil/widge
     CardPerfilComponent,
     CardHistoriasComponent,
     CardUsuariosComponent,
-    UsuariosComponent,
+    UsersComponent,
  
     PostDetailComponent,
     InfoPerfilComponent,
