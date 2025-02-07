@@ -21,7 +21,7 @@ export class ResetPasswordComponent implements OnInit {
   public nivel_password = 0;
 
   constructor(
-    private _UserService:UserService,
+    private _userService:UserService,
     private _router:Router
   ) { }
 
@@ -33,7 +33,7 @@ export class ResetPasswordComponent implements OnInit {
     if(!this.email){
       this.msm_error = 'El correo electrónico es requerido';
     }else{
-      this._UserService.validate_usuario({
+      this._userService.validate_usuario({
         email: this.email
       }).subscribe(
         response=>{
@@ -48,7 +48,7 @@ export class ResetPasswordComponent implements OnInit {
     if(!this.code){
       this.msm_error = 'El código es requerido';
     }else{
-      this._UserService.validate_code(this.code,this.email).subscribe(
+      this._userService.validate_code(this.code,this.email).subscribe(
         response=>{
           if(response.data){
             //
@@ -110,7 +110,7 @@ export class ResetPasswordComponent implements OnInit {
       this.msm_error = 'Las contraseñas no coinciden';
     }else{
         //
-        this._UserService.reset_password(this.email,{
+        this._userService.reset_password(this.email,{
           password_new: this.password_new
         }).subscribe(
           response=>{
