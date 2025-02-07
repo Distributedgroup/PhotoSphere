@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UserService } from 'src/app/services/user.service';
 import { io } from "socket.io-client";
 
 @Component({
@@ -15,7 +15,7 @@ export class InvitacionesUsuarioComponent implements OnInit {
   public socket = io("http://localhost:4201",{transports: ['websocket']});
 
   constructor(
-    private _usuarioService:UsuarioService
+    private _UserService:UserService
   ) { }
 
   ngOnInit(): void {
@@ -30,7 +30,7 @@ export class InvitacionesUsuarioComponent implements OnInit {
 
   init_invitaciones(){
     this.load_invitacion = true;
-    this._usuarioService.get_invitaciones_usuario('Limite',this.token).subscribe(
+    this._UserService.get_invitaciones_usuario('Limite',this.token).subscribe(
       response=>{
         this.invitaciones = response.data;
         console.log(this.invitaciones);
@@ -41,7 +41,7 @@ export class InvitacionesUsuarioComponent implements OnInit {
   }
 
   set_invitacion(tipo:any,id:any,item:any){
-    this._usuarioService.aceptar_denegar_invitacion(tipo,id,this.token).subscribe(
+    this._UserService.aceptar_denegar_invitacion(tipo,id,this.token).subscribe(
       response=>{
         console.log(response);
         this.socket.emit('set-invitacion',{
