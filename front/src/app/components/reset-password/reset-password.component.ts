@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UserService } from 'src/app/services/user.service';
 declare var passwordStrengthMeter:any;
 
 @Component({
@@ -21,7 +21,7 @@ export class ResetPasswordComponent implements OnInit {
   public nivel_password = 0;
 
   constructor(
-    private _usuarioService:UsuarioService,
+    private _UserService:UserService,
     private _router:Router
   ) { }
 
@@ -33,7 +33,7 @@ export class ResetPasswordComponent implements OnInit {
     if(!this.email){
       this.msm_error = 'El correo electrónico es requerido';
     }else{
-      this._usuarioService.validate_usuario({
+      this._UserService.validate_usuario({
         email: this.email
       }).subscribe(
         response=>{
@@ -48,7 +48,7 @@ export class ResetPasswordComponent implements OnInit {
     if(!this.code){
       this.msm_error = 'El código es requerido';
     }else{
-      this._usuarioService.validate_code(this.code,this.email).subscribe(
+      this._UserService.validate_code(this.code,this.email).subscribe(
         response=>{
           if(response.data){
             //
@@ -110,7 +110,7 @@ export class ResetPasswordComponent implements OnInit {
       this.msm_error = 'Las contraseñas no coinciden';
     }else{
         //
-        this._usuarioService.reset_password(this.email,{
+        this._UserService.reset_password(this.email,{
           password_new: this.password_new
         }).subscribe(
           response=>{
