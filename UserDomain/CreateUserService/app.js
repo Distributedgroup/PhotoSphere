@@ -12,20 +12,19 @@ const app = express();
 const port = process.env.PORT || 5050;
 
 // ✅ Middleware
-app.use(cors({ 
-    origin: "*",  
-    methods: "GET, POST, PUT, DELETE, OPTIONS",
-    allowedHeaders: "Content-Type, Authorization, X-API-KEY, X-Requested-With, Access-Control-Allow-Request-Method"
+app.use(cors({
+  origin: "*",
+  methods: "GET, POST, PUT, DELETE, OPTIONS",
+  allowedHeaders: "Content-Type, Authorization"
 }));
 
-// ✅ Permitir solicitudes OPTIONS para preflight
+// Asegurar que el método OPTIONS responde correctamente
 app.options("*", (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.sendStatus(200);
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.sendStatus(200);
 });
-
 // ✅ Middleware de parsing de JSON
 app.use(bodyparser.urlencoded({ limit: "50mb", extended: true }));
 app.use(bodyparser.json({ limit: "50mb", extended: true }));
