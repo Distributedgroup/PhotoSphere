@@ -9,7 +9,7 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 })
 export class LoginComponent implements OnInit {
 
-  public usuario : any = {};
+  public user : any = {};
   public msm_error = '';
 
   constructor(
@@ -24,9 +24,9 @@ export class LoginComponent implements OnInit {
   }
 
   login(){
-    console.log(this.usuario);
-    this.usuario.email = this.usuario.email.trim();
-    this._usuarioService.login_usuario(this.usuario).subscribe(
+    console.log(this.user);
+    this.user.email = this.user.email.trim();
+    this._usuarioService.login_user(this.user).subscribe(
       response=>{
         console.log(response);
         if(response.data != undefined){
