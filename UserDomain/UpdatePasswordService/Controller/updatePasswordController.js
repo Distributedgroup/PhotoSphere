@@ -1,4 +1,4 @@
-const User = require('../Model/user');  
+var Usuario = require('../Model/User'); 
 const bcrypt = require('bcrypt'); // Add bcrypt import
 
 const saltRounds = 10; // Define saltRounds before using it
