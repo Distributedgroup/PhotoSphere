@@ -80,7 +80,7 @@ export class RegistroComponent implements OnInit {
     }else{
       
       console.log(this.usuario);
-      this._usuarioService.create_usuario(this.usuario).subscribe(
+      this._usuarioService.create_user(this.usuario).subscribe(
         response=>{
           if(response.data != undefined){
             this.msm_error = '';
