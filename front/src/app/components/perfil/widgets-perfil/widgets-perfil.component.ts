@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GLOBAL } from 'src/app/services/GLOBAL';
 import { PostService } from 'src/app/services/post.service';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-widgets-perfil',
@@ -23,7 +23,7 @@ export class WidgetsPerfilComponent implements OnInit {
 
   constructor(
     private _route:ActivatedRoute,
-    private _userService:UsuarioService,
+    private _userService:UserService,
     private _postService:PostService
   ) { }
 
