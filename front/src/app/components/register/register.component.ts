@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UserService } from 'src/app/services/user.service';
 declare var passwordStrengthMeter:any;
 
 @Component({
-  selector: 'app-registro',
-  templateUrl: './registro.component.html',
-  styleUrls: ['./registro.component.css']
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
 })
-export class RegistroComponent implements OnInit {
+export class RegisterComponent implements OnInit {
 
   public nivel_password = 0;
-  public usuario :any = {};
+  public user :any = {};
   public msm_error = '';
 
   constructor(
-    private _usuarioService:UsuarioService,
+    private _userService:UserService,
     private _router:Router
   ) { }
 
@@ -61,26 +61,26 @@ export class RegistroComponent implements OnInit {
   }
 
   registro(){
-    if(!this.usuario.nombres){
+    if(!this.user.nombres){
       this.msm_error = 'Los nombres son requeridos';
-    }else if(!this.usuario.apellidos){
+    }else if(!this.user.apellidos){
       this.msm_error = 'Los apellidos son requeridos';
-    }else if(!this.usuario.email){
+    }else if(!this.user.email){
       this.msm_error = 'El email es requerido';
-    }else if(!this.usuario.password){
+    }else if(!this.user.password){
       this.msm_error = 'La contraseña es requerida';
-    }else if(!this.usuario.password_confirm){
+    }else if(!this.user.password_confirm){
       this.msm_error = 'La contraseña de confirmación es requerida';
-    }else if(this.usuario.password.length <= 5){
+    }else if(this.user.password.length <= 5){
       this.msm_error = 'La contraseña debe tener mas de 6 caractares';
-    }else if(this.usuario.password != this.usuario.password_confirm){
+    }else if(this.user.password != this.user.password_confirm){
       this.msm_error = 'Las contraseñas no coinciden';
     }else if(this.nivel_password != 4){
       this.msm_error = 'La contraseña es debe ser mas fuerte';
     }else{
       
-      console.log(this.usuario);
-      this._usuarioService.create_usuario(this.usuario).subscribe(
+      console.log(this.user);
+      this._userService.create_user(this.user).subscribe(
         response=>{
           if(response.data != undefined){
             this.msm_error = '';
