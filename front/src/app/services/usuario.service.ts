@@ -21,9 +21,9 @@ export class UsuarioService {
 
   }
 
-  login_usuario(data:any):Observable<any>{
+  login_user(data:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
-    return this._http.post(this.url+'login_usuario',data,{headers:headers})
+    return this._http.post(this.url+'login_user',data,{headers:headers})
   }
 
   get_usuario(id:any,token:any):Observable<any>{
