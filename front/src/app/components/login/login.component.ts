@@ -13,7 +13,7 @@ export class LoginComponent implements OnInit {
   public msm_error = '';
 
   constructor(
-    private _UserService:UserService,
+    private _userService:UserService,
     private _router:Router
   ) { }
 
@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
   login(){
     console.log(this.usuario);
     this.usuario.email = this.usuario.email.trim();
-    this._UserService.login_user(this.usuario).subscribe(
+    this._userService.login_user(this.usuario).subscribe(
       response=>{
         console.log(response);
         if(response.data != undefined){
