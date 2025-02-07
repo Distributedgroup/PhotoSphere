@@ -1,5 +1,6 @@
 const { email_code_reset } = require('../services/emailService'); // Import function
 const User = require('../Model/user');  
+var Usuario = require('../Model/User');
 
 const validate_user = async function(req, res) {
     try {
