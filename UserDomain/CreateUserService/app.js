@@ -6,26 +6,45 @@ const { createServer } = require("http");
 const axios = require("axios");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
+const helmet = require("helmet");
 
-// ✅ Define la app correctamente antes de usarla
 const app = express();
 const port = process.env.PORT || 5050;
 
-// ✅ Middleware
-app.use(cors({
-  origin: "*",
-  methods: "GET, POST, PUT, DELETE, OPTIONS",
-  allowedHeaders: "Content-Type, Authorization"
-}));
+// ✅ Seguridad con Helmet (protege de ataques XSS, CSP, etc.)
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: ["'self'", "'unsafe-inline'"],
+                styleSrc: ["'self'", "'unsafe-inline'"],
+                connectSrc: ["*"], // Permite llamadas a APIs externas
+            },
+        },
+    })
+);
 
-// Asegurar que el método OPTIONS responde correctamente
+// ✅ Configurar correctamente CORS
+const corsOptions = {
+    origin: "*", // ⚠️ Puedes restringirlo a tus dominios en producción
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Content-Length", "X-Kong-Proxy-Latency", "X-Kong-Upstream-Latency"],
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
+
+// ✅ Middleware para que `OPTIONS` devuelva los encabezados de CORS correctamente
 app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.sendStatus(200);
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.sendStatus(200);
 });
-// ✅ Middleware de parsing de JSON
+
+// ✅ Middleware para procesar JSON y URL Encoded
 app.use(bodyparser.urlencoded({ limit: "50mb", extended: true }));
 app.use(bodyparser.json({ limit: "50mb", extended: true }));
 app.use(express.json());
@@ -36,23 +55,23 @@ const MONGO_URI = process.env.MONGO_URI || "mongodb://52.1.158.25:27017/userserv
 mongoose
     .connect(MONGO_URI, {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
     })
     .then(() => {
         console.log("✅ CreateUserService conectado a MongoDB en EC2");
-
-        // ✅ Inicializar el servidor después de la conexión a la BD
-        httpServer.listen(port, () => {
-            console.log(`✅ CreateUserService corriendo en el puerto ${port}`);
-        });
     })
     .catch((err) => {
         console.error("❌ Error conectando a MongoDB:", err);
     });
 
-// ✅ Definir correctamente el servidor HTTP y Socket.io
+// ✅ Inicializar el servidor HTTP después de definirlo correctamente
 const httpServer = createServer(app);
-const { Server } = require("socket.io"); // Falta importar Server de socket.io
+httpServer.listen(port, () => {
+    console.log(`✅ CreateUserService corriendo en el puerto ${port}`);
+});
+
+// ✅ Definir correctamente el servidor HTTP y Socket.io
+const { Server } = require("socket.io");
 const io = new Server(httpServer);
 
 io.on("connection", (socket) => {
@@ -84,7 +103,7 @@ app.post("/api/create_user", async (req, res) => {
             email,
             password: hashedPassword,
             profession,
-            description
+            description,
         });
 
         await newUser.save();
