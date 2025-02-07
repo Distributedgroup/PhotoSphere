@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GLOBAL } from 'src/app/services/GLOBAL';
 import { PostService } from 'src/app/services/post.service';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UserService } from 'src/app/services/user.service';
 import { io } from "socket.io-client";
 
 @Component({
@@ -24,7 +24,7 @@ export class PostsPerfilComponent implements OnInit {
   public posts : Array<any> = [];
 
   constructor(
-    private _userService:UsuarioService,
+    private _userService:UserService,
     private _postService:PostService,
     private _route:ActivatedRoute,
     private _router:Router
