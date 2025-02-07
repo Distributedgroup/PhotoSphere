@@ -17,7 +17,7 @@ export class UsuarioService {
 
   create_user(data:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
-    return this._http.post(this.url + '/create_user', data, { headers: headers });
+    return this._http.post(this.url + 'create_user', data, { headers: headers });
 
   }
 
