@@ -15,7 +15,7 @@ export class UsuarioService {
     private _http : HttpClient
   ) { }
 
-  create_usuario(data:any):Observable<any>{
+  create_user(data:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
     return this._http.post(this.url+'create_usuario',data,{headers:headers})
   }
