@@ -1,4 +1,4 @@
-require('dotenv').config(); // Load environment variables
+require('dotenv').config(); // environment variables
 var express = require('express');
 var mongoose = require('mongoose');
 var bodyparser = require('body-parser');
