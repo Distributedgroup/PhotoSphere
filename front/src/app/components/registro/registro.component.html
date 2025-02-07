@@ -19,23 +19,23 @@
           <div class="mt-4">
             <!-- Email -->
             <div class="mb-3 input-group-lg">
-              <input type="text" class="form-control" placeholder="Nombres" name="nombres" [(ngModel)]="usuario.nombres">
+              <input type="text" class="form-control" placeholder="Nombres" name="nombres" [(ngModel)]="user.names">
             </div>
             <!-- New password -->
             <!-- Email -->
             <div class="mb-3 input-group-lg">
-              <input type="text" class="form-control" placeholder="Apellidos" name="apellidos" [(ngModel)]="usuario.apellidos">
+              <input type="text" class="form-control" placeholder="Apellidos" name="apellidos" [(ngModel)]="user.surnames">
             </div>
             <!-- New password -->
             <!-- Email -->
             <div class="mb-3 input-group-lg">
-              <input type="email" class="form-control" placeholder="Correo electrónico" name="email" [(ngModel)]="usuario.email">
+              <input type="email" class="form-control" placeholder="Correo electrónico" name="email" [(ngModel)]="user.email">
             </div>
             <!-- New password -->
             <div class="mb-3 position-relative">
               <!-- Input group -->
               <div class="input-group input-group-lg">
-                <input class="form-control fakepassword" type="password" id="psw-input" placeholder="Contraseña" name="password" [(ngModel)]="usuario.password">
+                <input class="form-control fakepassword" type="password" id="psw-input" placeholder="Contraseña" name="password" [(ngModel)]="user.password">
                 <span class="input-group-text p-0">
                   <i class="fakepasswordicon fa-solid fa-eye-slash cursor-pointer p-2 w-40px"></i>
                 </span>
@@ -49,7 +49,7 @@
             </div>
             <!-- Confirm password -->
             <div class="mb-3 input-group-lg mb-3" [ngClass]="{'mb-5': !msm_error}">
-              <input class="form-control" type="password" placeholder="Confirmar contraseña" name="password_confirm" [(ngModel)]="usuario.password_confirm">
+              <input class="form-control" type="password" placeholder="Confirmar contraseña" name="password_confirm" [(ngModel)]="user.password_confirm">
             </div>
 
             <div *ngIf="msm_error" class="mb-3">
