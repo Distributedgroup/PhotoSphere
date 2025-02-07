@@ -24,7 +24,7 @@ export class NavComponent implements OnInit {
   public url = GLOBAL.url;
 
   constructor(
-    private _UserService:UserService,
+    private _userService:UserService,
     private _router:Router,
     private _route:ActivatedRoute,
     private _postService:PostService
@@ -91,7 +91,7 @@ export class NavComponent implements OnInit {
 
   init_invitaciones(){
     this.load_invitacion = true;
-    this._UserService.get_invitaciones_usuario('Limite',this.token).subscribe(
+    this._userService.get_invitaciones_usuario('Limite',this.token).subscribe(
       response=>{
         this.invitaciones = response.data;
         this.load_invitacion = false;
@@ -100,7 +100,7 @@ export class NavComponent implements OnInit {
   }
 
   set_invitacion(tipo:any,id:any,item:any){
-    this._UserService.aceptar_denegar_invitacion(tipo,id,this.token).subscribe(
+    this._userService.aceptar_denegar_invitacion(tipo,id,this.token).subscribe(
       response=>{
         console.log(response);
         this.socket.emit('set-invitacion',{
