@@ -7,23 +7,7 @@ const axios = require("axios");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 
-var app = express();
-const port = process.env.PORT || 5050;
-
-// Middleware
-app.use(bodyparser.urlencoded({ limit: "50mb", extended: true }));
-app.use(bodyparser.json({ limit: "50mb", extended: true }));
-app.use(express.json());
-
-// 🔹 CONFIGURAR CORS USANDO EL MIDDLEWARE DE EXPRESS
-app.use(cors({
-  origin: "*",  // Permite cualquier origen (puedes reemplazarlo con un dominio específico)
-  methods: "GET, POST, PUT, DELETE, OPTIONS",
-  allowedHeaders: "Content-Type, Authorization, X-API-KEY, X-Requested-With, Access-Control-Allow-Request-Method"
-}));
-
-// 🔹 MANEJO EXPLÍCITO DEL MÉTODO OPTIONS (Preflight Request)
-app.options('*', cors());  // Responde correctamente a las solicitudes OPTIONS
+app.options('*', cors()); 
 var app = express();
 const port = process.env.PORT || 5050;
 
