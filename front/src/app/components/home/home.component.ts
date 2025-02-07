@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private _historiaService:HistoriaService,
-    private _UserService:UserService,
+    private _userService:UserService,
     private _postService:PostService,
     private _router:Router
   ) { 
