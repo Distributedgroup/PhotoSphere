@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GLOBAL } from 'src/app/services/GLOBAL';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-info-perfil',
@@ -24,7 +24,7 @@ export class InfoPerfilComponent implements OnInit {
   
   constructor(
 
-    private _userService:UsuarioService,
+    private _userService:UserService,
     private _route:ActivatedRoute
   ) { }
 
