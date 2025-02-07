@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UserService } from 'src/app/services/user.service';
 import { io } from "socket.io-client";
 import { ActivatedRoute, Router } from '@angular/router';
 import { GLOBAL } from 'src/app/services/GLOBAL';
@@ -24,7 +24,7 @@ export class NavComponent implements OnInit {
   public url = GLOBAL.url;
 
   constructor(
-    private _usuarioService:UsuarioService,
+    private _usuarioService:UserService,
     private _router:Router,
     private _route:ActivatedRoute,
     private _postService:PostService
