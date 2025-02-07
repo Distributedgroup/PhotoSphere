@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GLOBAL } from 'src/app/services/GLOBAL';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
-  selector: 'app-usuarios',
-  templateUrl: './usuarios.component.html',
-  styleUrls: ['./usuarios.component.css']
+  selector: 'app-users',
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.css']
 })
-export class UsuariosComponent implements OnInit {
+export class UsersComponent implements OnInit {
 
   public search = '';
   public token = localStorage.getItem('token');
   public load_data = true;
-  public usuarios : Array<any> = [];
+  public users : Array<any> = [];
   public url = GLOBAL.url;
 
   constructor(
     private _route:ActivatedRoute,
-    private _usuarioService:UsuarioService
+    private _userService:UserService
   ) { }
 
   ngOnInit(): void {
@@ -33,14 +33,14 @@ export class UsuariosComponent implements OnInit {
 
   init_data(){
     this.load_data = true;
-    this._usuarioService.obtener_usuarios(this.search,this.token).subscribe(
+    this._userService.get_users(this.search,this.token).subscribe(
       response=>{
-        this.usuarios = response.data;
-        for(var item of this.usuarios){
-          if(item.avatar == 'defecto.png') item.avatar = 'assets/images/usuario.png';
+        this.users = response.data;
+        for(var item of this.users){
+          if(item.avatar == 'defecto.png') item.avatar = 'assets/images/user.png';
           else if(item.avatar != 'defecto.png') item.avatar = this.url + 'obtener_portada_img/'+item.avatar;
         }
-        console.log(this.usuarios);
+        console.log(this.users);
         
         this.load_data = false;
       }
