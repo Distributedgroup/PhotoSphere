@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HistoriaService } from 'src/app/services/historia.service';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UserService } from 'src/app/services/user.service';
 declare var e:any;
 import { io } from "socket.io-client";
 import { GLOBAL } from 'src/app/services/GLOBAL';
@@ -22,7 +22,7 @@ export class CardUsuariosComponent implements OnInit {
 
   constructor(
     private _historiaService:HistoriaService,
-    private _usuarioService:UsuarioService
+    private _UserService:UserService
   ) { 
 
   }
@@ -41,7 +41,7 @@ export class CardUsuariosComponent implements OnInit {
     this.init_usuario();
   }
   init_usuario(){
-    this._usuarioService.get_usuario_random(this.token).subscribe(
+    this._UserService.get_usuario_random(this.token).subscribe(
       response=>{
         this.usuarios = response.data;
 
@@ -55,7 +55,7 @@ export class CardUsuariosComponent implements OnInit {
   }
 
   send_invitacion(id:any){
-    this._usuarioService.send_invitacion_amistad({
+    this._UserService.send_invitacion_amistad({
       usuario_destinatario: id
     },this.token).subscribe(
       response=>{
