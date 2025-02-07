@@ -7,7 +7,7 @@ import { JwtHelperService } from "@auth0/angular-jwt";
 @Injectable({
   providedIn: 'root'
 })
-export class UsuarioService {
+export class UserService {
 
   public url = GLOBAL.url;
 
@@ -15,12 +15,12 @@ export class UsuarioService {
     private _http : HttpClient
   ) { }
 
-  create_usuario(data:any):Observable<any>{
+  create_user(data:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
-    return this._http.post(this.url+'create_usuario',data,{headers:headers})
+    return this._http.post(this.url+'create_user',data,{headers:headers})
   }
 
-  login_usuario(data:any):Observable<any>{
+  login_user(data:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
     return this._http.post(this.url+'login_usuario',data,{headers:headers})
   }
@@ -31,7 +31,7 @@ export class UsuarioService {
     return this._http.get(this.url+'get_usuario/'+id,{headers:headers})
   }
 
-  update_usuario(id:any,data:any,token:any):Observable<any>{
+  update_user(id:any,data:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.put(this.url+'update_usuario/'+id,data,{headers:headers})
   }
@@ -81,9 +81,9 @@ export class UsuarioService {
     return this._http.get(this.url+'obtener_historias_usuario',{headers:headers})
   }
 
-  obtener_usuarios(filtro:any,token:any):Observable<any>{
+  get_users(filtro:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-    return this._http.get(this.url+'obtener_usuarios/'+filtro,{headers:headers})
+    return this._http.get(this.url+'get_users/'+filtro,{headers:headers})
   }
 
   obtener_usuario_username(username:any,token:any):Observable<any>{
