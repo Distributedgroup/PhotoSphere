@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +13,7 @@ export class LoginComponent implements OnInit {
   public msm_error = '';
 
   constructor(
-    private _usuarioService:UsuarioService,
+    private _UserService:UserService,
     private _router:Router
   ) { }
 
@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
   login(){
     console.log(this.usuario);
     this.usuario.email = this.usuario.email.trim();
-    this._usuarioService.login_usuario(this.usuario).subscribe(
+    this._UserService.login_user(this.usuario).subscribe(
       response=>{
         console.log(response);
         if(response.data != undefined){
