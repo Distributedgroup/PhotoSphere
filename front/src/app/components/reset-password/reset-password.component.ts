@@ -33,7 +33,7 @@ export class ResetPasswordComponent implements OnInit {
     if(!this.email){
       this.msm_error = 'El correo electrónico es requerido';
     }else{
-      this._usuarioService.validate_usuario({
+      this._usuarioService.validate_user({
         email: this.email
       }).subscribe(
         response=>{
