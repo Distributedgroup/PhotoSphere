@@ -1,4 +1,4 @@
-var Usuario = require('../Model/User'); 
+var User = require('../Model/User'); 
 const bcrypt = require('bcrypt'); 
 
 const saltRounds = 10; // Define saltRounds before using it
