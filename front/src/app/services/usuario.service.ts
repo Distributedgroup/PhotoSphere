@@ -31,9 +31,9 @@ export class UsuarioService {
     return this._http.get(this.url+'get_usuario/'+id,{headers:headers})
   }
 
-  update_usuario(id:any,data:any,token:any):Observable<any>{
+  update_user(id:any,data:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-    return this._http.put(this.url+'update_usuario/'+id,data,{headers:headers})
+    return this._http.put(this.url+'update_user/'+id,data,{headers:headers})
   }
 
   update_password(id:any,data:any,token:any):Observable<any>{
