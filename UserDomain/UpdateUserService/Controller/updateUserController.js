@@ -8,7 +8,7 @@ const update_user = async function(req, res) {
         // Check if the user exists
         let userExists = await User.findById(id);
         if (!userExists) {
-            return res.status(404).send({ message: "User not found" });
+            return res.status(404).send({ message: "User not found" })
         }
 
         console.log("Data received for update:", data);
