@@ -1,0 +1,59 @@
+name: Deploy CreateUserService
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'front/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+      
+    - name: Forzar autenticación en Docker Hub
+      run: |
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin || exit 1
+        docker logout
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        
+    - name: Construir imagen Docker
+      run: |
+        cd front
+        docker build -t fernanyag20/front:latest .
+        docker images | grep front || echo "🚨 Imagen no encontrada localmente"
+
+    - name: Subir imagen a Docker Hub
+      run: | 
+        docker push fernanyag20/front:latest
+        echo "✅ Imagen subida a Docker Hub"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Iniciar sesión en Docker Hub en EC2
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST_USERDOMAIN}}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Conectar a EC2 y actualizar contenedor
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST_USERDOMAIN }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker pull fernanyag20/createuserservice:latest || echo "🚨 Error al hacer pull de la imagen"
+          docker stop createuserservice || true
+          docker rm createuserservice || true
+          docker run -d --name front -p 80:80 fernanyag20/front:latest
