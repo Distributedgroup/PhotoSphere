@@ -1,4 +1,4 @@
-name: Deploy CreateUserService
+name: Deploy Front
 
 on:
   push:
@@ -40,7 +40,7 @@ jobs:
     - name: Iniciar sesión en Docker Hub en EC2
       uses: appleboy/ssh-action@v0.1.10
       with:
-        host: ${{ secrets.EC2_HOST_USERDOMAIN}}
+        host: ${{ secrets.EC2_HOST_FRONT}}
         username: ubuntu
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
@@ -53,7 +53,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          docker pull fernanyag20/createuserservice:latest || echo "🚨 Error al hacer pull de la imagen"
-          docker stop createuserservice || true
-          docker rm createuserservice || true
+          docker pull fernanyag20/front:latest || echo "🚨 Error al hacer pull de la imagen"
+          docker stop front || true
+          docker rm front || true
           docker run -d --name front -p 80:80 fernanyag20/front:latest
