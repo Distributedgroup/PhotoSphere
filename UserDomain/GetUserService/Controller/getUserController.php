@@ -8,7 +8,7 @@ class GetUserController {
         error_log("🔹 Running getUserController...");
 
         // Get the authenticated user from the middleware
-        $authenticatedUser = $request->getAttribute('user');
+        $authenticatedUser = $request->getAttribute('user')
 
         if (!$authenticatedUser) {
             error_log("🔴 Authenticated user not found");
