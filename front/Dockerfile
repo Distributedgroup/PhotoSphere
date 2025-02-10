@@ -16,6 +16,9 @@ COPY . .
 # Construir la aplicación Angular en modo producción
 RUN npm run build --configuration=production
 
+# Verificar que la carpeta dist/ se generó correctamente
+RUN ls -lah /app/dist/
+
 # Etapa 2: Servir la aplicación con Nginx
 FROM nginx:alpine
 
