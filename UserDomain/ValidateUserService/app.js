@@ -33,7 +33,7 @@ io.on("connection", (socket) => {
 });
 
 // Connect to MongoDB in Docker on EC2
-const MONGO_URI = process.env.MONGO_URI || "mongodb://admin:secret@ec2-18-207-77-6.compute-1.amazonaws.com:27017/userservice?authSource=admin";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://52.1.158.25:27017/userservice";
 
 mongoose.connect(MONGO_URI, {
     useNewUrlParser: true,
