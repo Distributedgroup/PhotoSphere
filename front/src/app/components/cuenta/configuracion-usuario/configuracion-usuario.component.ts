@@ -9,10 +9,10 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 export class ConfiguracionUsuarioComponent implements OnInit {
 
   public token = localStorage.getItem('token');
-  public user :any = {};
-  public usuario : any = {
-    genero: '',
-    descripcion: '',
+  public usuario :any = {};
+  public user : any = {
+    gender: '',
+    description: '',
   };
   public msm_succes = '';
 
@@ -28,21 +28,21 @@ export class ConfiguracionUsuarioComponent implements OnInit {
   init_usuario(){
     this._usuarioService.get_usuario(this.user._id,this.token).subscribe(
       response=>{
-        this.usuario = response.data;
-        if(!this.usuario.genero) this.usuario.genero = '';
-        if(!this.usuario.descripcion) this.usuario.descripcion = '';
+        this.user = response.data;
+        if(!this.user.genrer) this.user.genrer = '';
+        if(!this.user.description)   this.user.description = '';
   
       }
     );
   }
 
   validate_descripcion(){
-   if(this.usuario.descripcion.length > 300) this.usuario.descripcion = this.usuario.descripcion.substring(0,300);
+   if(this.user.description.length > 300) this.user.description= this.user.description.substring(0,300);
   }
 
   update(){
-    console.log(this.usuario);
-    this._usuarioService.update_usuario(this.usuario._id,this.usuario,this.token).subscribe(
+    console.log(this.user);
+    this._usuarioService.update_user(this.user._id,this.user,this.token).subscribe(
       response=>{
         console.log(response);
         if(response.data != undefined){
