@@ -77,7 +77,7 @@ jobs:
             docker pull fernanyag20/getuserservice:latest || { echo "🚨 Error al hacer pull de la imagen"; exit 1; }
 
             echo "🚀 Iniciando nuevo contenedor..."
-            docker run -d --restart unless-stopped --name getuserservice -p 80:80 fernanyag20/getuserservice:latestt
+            docker run -d --restart unless-stopped --name getuserservice -p 80:80 fernanyag20/getuserservice:latest
 
             echo "🔍 Verificando contenedores activos..."
             docker ps -a
