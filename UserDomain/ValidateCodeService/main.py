@@ -7,7 +7,7 @@ load_dotenv()
 
 app = FastAPI()
 
-# Registrar rutas
+# Register rutas
 app.include_router(validate_code_router, prefix="/api")
 
 @app.get("/")
