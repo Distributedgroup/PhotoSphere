@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 require_once __DIR__ . '/Controller/getUserController.php';
 
 // Define the connection to MongoDB directly in the code
-$MONGO_URI = "mongodb://admin:secret@ec2-18-207-77-6.compute-1.amazonaws.com:27017/userservice?authSource=admin";
+$MONGO_URI = "mongodb://52.1.158.25:27017/userservice";
 $JWT_SECRET = "6M5X#D6%7Nh*!pkR3HL7F@Fdx"; // Define JWT directly in the code
 
 // Create Slim instance
