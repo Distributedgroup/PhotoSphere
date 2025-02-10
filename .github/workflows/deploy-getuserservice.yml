@@ -71,7 +71,7 @@ jobs:
             echo "🔄 Eliminando imágenes antiguas..."
             docker stop getuserservice || echo "No existía un contenedor en ejecución"
             docker rm getuserservice || echo "No existía un contenedor previo"
-            docker rmi alevm98/getuserservice:latest || echo "No había imagen previa para eliminar"
+            docker rmi fernanyag20/getuserservice:latest || echo "No había imagen previa para eliminar"
 
             echo "📥 Descargando nueva imagen desde Docker Hub..."
             docker pull fernanyag20/getuserservice:latest || { echo "🚨 Error al hacer pull de la imagen"; exit 1; }
