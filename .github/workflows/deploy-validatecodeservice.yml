@@ -76,7 +76,7 @@ jobs:
             docker pull alevm98/validatecodeservice:latest || { echo "🚨 Error al hacer pull de la imagen"; exit 1; }
 
             echo "🚀 Iniciando nuevo contenedor..."
-            docker run -d --restart unless-stopped --name validatecodeservice -p 5053:5053 alevm98/validatecodeservice:latest
+            docker run -d --restart unless-stopped --name validatecodeservice -p 5060:5060 alevm98/validatecodeservice:latest
 
             echo "🔍 Verificando contenedores activos..."
             docker ps -a
