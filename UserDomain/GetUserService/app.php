@@ -21,7 +21,7 @@ try {
     error_log("✅ Connection to MongoDB successful");
 } catch (Exception $e) {
     error_log("❌ Error connecting to MongoDB: " . $e->getMessage());
-    die(json_encode(["error" => "MongoDB connection failed", "details" => $e->getMessage()]));
+    die(json_encode(["error" => "MongoDB connection failed", "details" => $e->getMessage()]))
 }
 
 // Middleware
