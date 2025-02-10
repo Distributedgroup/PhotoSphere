@@ -29,7 +29,7 @@ export class ConfiguracionUsuarioComponent implements OnInit {
     this._usuarioService.get_usuario(this.user._id,this.token).subscribe(
       response=>{
         this.user = response.data;
-        if(!this.user.genrer) this.user.genrer = '';
+        if(!this.user.gender) this.user.gender = '';
         if(!this.user.description)   this.user.description = '';
   
       }
