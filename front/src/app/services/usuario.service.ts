@@ -41,10 +41,11 @@ export class UsuarioService {
     return this._http.put(this.url+'update_password/'+id,data,{headers:headers})
   }
 
-  validate_usuario(data:any):Observable<any>{
+  validate_user(data:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
-    return this._http.post(this.url+'validate_usuario',data,{headers:headers})
+    return this._http.post(this.url+'validate_user',data,{headers:headers})
   }
+
 
   validate_code(code:any,email:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
