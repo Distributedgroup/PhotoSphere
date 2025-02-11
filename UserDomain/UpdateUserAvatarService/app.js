@@ -32,22 +32,29 @@ io.on("connection", (socket) => {
     });
 });
 
-// Connect to MongoDB in Docker on EC2
-const MONGO_URI = process.env.MONGO_URI || "mongodb://52.1.158.25:27017/userservice";
+const connectWithRetry = () => {
+    console.log("⏳ Intentando conectar a MongoDB...");
+    mongoose.connect(MONGO_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 5000,  // Reducimos el timeout para evitar esperas largas
+        connectTimeoutMS: 10000, 
+    })
+    .then(() => {
+        console.log("✅ Conectado a MongoDB en Docker en EC2");
 
-mongoose.connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}, (err, res) => {
-    if (err) {
-        console.error("❌ Error connecting to MongoDB:", err);
-    } else {
-        httpServer.listen(port, function () {
-            console.log("✅ Server running on port " + port);
-            console.log("✅ Connected to MongoDB in Docker on EC2");
+        // Iniciar el servidor solo después de una conexión exitosa
+        httpServer.listen(port, () => {
+            console.log("✅ Servidor corriendo en el puerto " + port);
         });
-    }
-});
+    })
+    .catch((err) => {
+        console.error("❌ Error al conectar con MongoDB. Reintentando en 5 segundos...", err);
+        setTimeout(connectWithRetry, 5000);  // Reintentar cada 5 segundos
+    });
+};
+
+connectWithRetry();
 
 // Configure Middleware
 app.use(bodyparser.urlencoded({ limit: '50mb', extended: true }));
