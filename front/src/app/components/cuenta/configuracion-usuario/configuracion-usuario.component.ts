@@ -26,13 +26,23 @@ export class ConfiguracionUsuarioComponent implements OnInit {
   }
 
   init_usuario(){
-    this._usuarioService.get_user(this.usuario._id,this.token).subscribe(
-      response=>{
-        this.user = response.data || response;
-        if(!this.user.gender) this.user.gender = '';
-        if(!this.user.description) this.user.description = '';
-  
-      }
+    this._usuarioService.get_user(this.usuario._id, this.token).subscribe(
+        response=>{
+            console.log("Respuesta de get_user:", response);
+            console.log("Datos en response.data:", response.data);
+
+            this.user = response.data;
+
+            // 🔹 Asegurar que el _id se asigne correctamente
+            if (response.data && response.data._id) {
+                this.user._id = response.data._id;
+            } else {
+                console.error("Error: _id no está en response.data");
+            }
+
+            if(!this.user.gender) this.user.gender = '';
+            if(!this.user.description) this.user.description = '';
+        }
     );
   }
 
