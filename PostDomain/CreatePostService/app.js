@@ -100,6 +100,12 @@ Promise.all([
     console.error("❌ Error inicializando bases de datos:", err);
 });
 
+if (!mongoConn2) {
+    console.error("❌ Error: mongoConn2 no se inicializó correctamente en app.js.");
+} else {
+    console.log("✅ mongoConn2 inicializado correctamente en app.js.");
+}
+
 // 🔹 Exportar conexiones para ser usadas en modelos
 module.exports = {
     app,
