@@ -15,7 +15,7 @@ export class NavComponent implements OnInit {
   public token = localStorage.getItem('token');
   public invitaciones : Array<any> = [];
   public notificaciones : Array<any> = [];
-  public socket = io("http://localhost:4201",{transports: ['websocket']});
+  public socket = io("http://54.172.88.33",{transports: ['websocket']});
   public user: any = {};
   public load_invitacion = false;
   public load_notificacion = false;
