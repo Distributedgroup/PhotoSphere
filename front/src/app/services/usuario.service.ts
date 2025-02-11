@@ -26,10 +26,10 @@ export class UsuarioService {
     return this._http.post(this.url+'login_user',data,{headers:headers})
   }
 
-  get_user(id:any,token:any):Observable<any>{
-    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':`Bearer ${token}`});
-    return this._http.get(this.url+'get_user/'+id,{headers:headers})
-  }
+get_user(id: any, token: any): Observable<any> {
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` });
+    return this._http.get(`${this.url}/get_user/${id}`, { headers: headers });
+}
 
   update_user(id:any,data:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
