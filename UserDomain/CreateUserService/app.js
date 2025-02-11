@@ -61,7 +61,7 @@ const User = require("./Model/User");
 // *Create user in MongoDB with email validation and password encryption*
 app.post("/api/create_user", async (req, res) => {
     try {
-        const { names, surnames, email, password, profession, description } = req.body;
+        const { names, surnames, email, username, password, profession, description } = req.body;
 
         // Check if the email is already registered
         const existingUser = await User.findOne({ email });
@@ -78,6 +78,7 @@ app.post("/api/create_user", async (req, res) => {
             names,
             surnames,
             email,
+            username,
             password: hashedPassword, // Save encrypted password
             profession,
             description
