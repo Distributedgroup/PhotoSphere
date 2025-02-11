@@ -5,7 +5,8 @@ use Slim\Factory\AppFactory;
 use MongoDB\Client;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-require_once __DIR__ . '/Controller/getUserController.php';
+require_once __DIR__ . '/GetUserService/Controller/getUserController.php';
+
 
 // Define the connection to MongoDB directly in the code
 $MONGO_URI = "mongodb://52.1.158.25:27017/userservice";
