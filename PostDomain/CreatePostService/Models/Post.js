@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const connections = require('../app');
-const mongoConn2 = connections.mongoConn2;
+const { mongoConn2 } = require('../app'); // Importa mongoConn2 correctamente
 
 const Schema = mongoose.Schema;
 
