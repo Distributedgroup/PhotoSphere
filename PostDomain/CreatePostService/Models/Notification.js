@@ -1,6 +1,19 @@
 const mongoose = require('mongoose');
-const connections = require('../app');
-const mongoConn1 = connections.mongoConn1;
+
+const MONGO_URI_1 = "mongodb://52.201.91.213:27017/socialN"; // IP de la segunda base de datos
+const mongoConn1 = mongoose.createConnection(MONGO_URI_1, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+mongoConn1.on('error', err => {
+    console.error("❌ Error conectando a MongoDB 1 en Notification.js:", err);
+});
+
+mongoConn1.once('open', () => {
+    console.log("✅ Conectado correctamente a MongoDB 1 en Notification.js");
+});
+
 
 const Schema = mongoose.Schema;
 
