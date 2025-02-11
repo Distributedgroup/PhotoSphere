@@ -51,6 +51,25 @@ $app->get('/api/get_user/{id}', function (Request $request, Response $response, 
     return $controller->getUser($request, $response, $args);
 })->add('authMiddleware'); // Apply middleware here
 
+// Middleware para manejar CORS
+$app->add(function (Request $request, Response $response, $next) {
+    $response = $next->handle($request);
+    return $response
+        ->withHeader('Access-Control-Allow-Origin', '*') // Permitir cualquier origen
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS') // Métodos permitidos
+        ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With') // Headers permitidos
+        ->withHeader('Access-Control-Allow-Credentials', 'true'); // Si necesitas enviar cookies o tokens
+});
+
+// Manejo de solicitudes OPTIONS (Preflight)
+$app->options('/{routes:.+}', function (Request $request, Response $response) {
+    return $response->withHeader('Access-Control-Allow-Origin', '*')
+                    ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+                    ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+                    ->withHeader('Access-Control-Allow-Credentials', 'true')
+                    ->withStatus(200);
+});
+
 
 // Run the application
 $app->run();
