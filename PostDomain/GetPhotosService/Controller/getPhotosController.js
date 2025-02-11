@@ -1,5 +1,5 @@
-var Post = require('../models/Post');
-var User = require('../models/User');
+var Post = require('../Models/Post');
+var User = require('../Models/User');
 var fs = require('fs');
 var path = require('path');
 
