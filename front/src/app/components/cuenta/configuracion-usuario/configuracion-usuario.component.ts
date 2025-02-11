@@ -20,41 +20,58 @@ export class ConfiguracionUsuarioComponent implements OnInit {
     private _usuarioService:UsuarioService
   ) { }
 
-  ngOnInit(): void {
-    this.usuario = JSON.parse(localStorage.getItem('usuario')!);
-    this.init_usuario();
-  }
+ngOnInit(): void {
+    const usuarioLocalStorage = localStorage.getItem('usuario');
 
-  init_usuario(){
+    if (usuarioLocalStorage) {
+        this.usuario = JSON.parse(usuarioLocalStorage);
+
+        if (this.usuario && this.usuario._id) {
+            this.init_usuario();
+        } else {
+            console.error("Error: No se encontró un ID de usuario en localStorage.");
+        }
+    } else {
+        console.error("Error: No se encontró información del usuario en localStorage.");
+    }
+}
+
+
+init_usuario(){
     this._usuarioService.get_user(this.usuario._id, this.token).subscribe(
-        response=>{
+        response => {
             console.log("Respuesta de get_user:", response);
             console.log("Datos en response.data:", response.data);
 
-            this.user = response.data;
+            if (response.data) {
+                this.user = { ...response.data };  // Clonar objeto sin perder propiedades
 
-            // 🔹 Asegurar que el _id se asigne correctamente
-            if (response.data && response.data._id) {
-                this.user._id = response.data._id;
+                if (!this.user._id) {
+                    console.error("Error: _id no está en response.data");
+                }
             } else {
-                console.error("Error: _id no está en response.data");
+                console.error("Error: La respuesta de get_user no tiene data.");
             }
 
-            if(!this.user.gender) this.user.gender = '';
-            if(!this.user.description) this.user.description = '';
+            if (!this.user.gender) this.user.gender = '';
+            if (!this.user.description) this.user.description = '';
+        },
+        error => {
+            console.error("Error en la petición de get_user:", error);
         }
     );
-  }
+}
+
 
   validate_descripcion(){
    if(this.user.description.length > 300) this.user.description = this.user.description.substring(0,300);
   }
 
-  update(){
+update(){
     console.log("ID antes de enviar:", this.user._id);
     console.log("Token enviado:", this.token);
     console.log("Datos enviados:", this.user);
-    
+
     if (!this.user._id) {
         console.error("Error: El ID del usuario sigue siendo undefined.");
         return;
@@ -63,11 +80,13 @@ export class ConfiguracionUsuarioComponent implements OnInit {
     this._usuarioService.update_user(this.user._id, this.user, this.token).subscribe(
         response => {
             console.log("Respuesta del servidor:", response);
-            if(response.data != undefined){
-                this.msm_succes = 'Se actualizó los datos de la cuenta';
+            if (response.data) {
+                this.msm_succes = 'Se actualizaron los datos de la cuenta';
             }
+        },
+        error => {
+            console.error("Error en la petición de update_user:", error);
         }
     );
 }
 
-}
