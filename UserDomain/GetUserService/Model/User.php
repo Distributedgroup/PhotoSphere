@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace Model;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model;
 
 class User extends Model
 {
-    use HasFactory;
-
-    protected $table = 'users';
+    protected $connection = 'mongodb';
+    protected $collection = 'users';
 
     protected $fillable = [
         'names',
@@ -34,14 +32,7 @@ class User extends Model
         'state' => false,
     ];
 
-    protected $hidden = [
-        'password',
-        'code_reset',
-    ];
+    protected $dates = ['birth', 'created_at', 'updated_at'];
 
-    protected $casts = [
-        'birth' => 'date',
-        'state' => 'boolean',
-        'created_at' => 'datetime',
-    ];
+    public $timestamps = true;
 }
