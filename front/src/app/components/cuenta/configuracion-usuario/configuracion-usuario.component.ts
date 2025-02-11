@@ -41,23 +41,23 @@ export class ConfiguracionUsuarioComponent implements OnInit {
   }
 
   update(){
-    console.log("ID enviado:", this.user._id);
+    console.log("ID antes de enviar:", this.user._id);
     console.log("Token enviado:", this.token);
     console.log("Datos enviados:", this.user);
     
     if (!this.user._id) {
-        console.error("Error: El ID del usuario no está definido");
+        console.error("Error: El ID del usuario sigue siendo undefined.");
         return;
     }
-    
-    console.log(this.user);
-    this._usuarioService.update_user(this.user._id,this.user,this.token).subscribe(
-      response=>{
-        console.log(response);
-        if(response.data != undefined){
-          this.msm_succes = 'Se actualizó los datos de la cuenta';
+
+    this._usuarioService.update_user(this.user._id, this.user, this.token).subscribe(
+        response => {
+            console.log("Respuesta del servidor:", response);
+            if(response.data != undefined){
+                this.msm_succes = 'Se actualizó los datos de la cuenta';
+            }
         }
-      }
     );
-  }
+}
+
 }
