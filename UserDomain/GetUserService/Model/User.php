@@ -1,10 +1,15 @@
 <?php
 class User {
     public static function findById($id, $db) {
-        $collection = $db->users;
-        return $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
+        try {
+            $collection = $db->users;
+            $user = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
 
-                // Convertir datos a un array asociativo compatible con el frontend
+            if (!$user) {
+                return null; // Retornar null si el usuario no existe
+            }
+
+            // Convertir datos a un array asociativo compatible con el frontend
             return [
                 "names" => $user["names"] ?? "",
                 "surnames" => $user["surnames"] ?? "",
@@ -23,7 +28,10 @@ class User {
                 "code_reset" => "", // No exponer el código de reseteo
                 "createdAt" => isset($user["createdAt"]) ? $user["createdAt"]->toDateTime()->format('Y-m-d H:i:s') : "",
             ];
+        } catch (Exception $e) {
+            error_log("Error fetching user by ID: " . $e->getMessage());
+            return null;
+        }
     }
 }
 ?>
-    
