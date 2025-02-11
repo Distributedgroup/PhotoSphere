@@ -1,5 +1,5 @@
 var express = require('express');
-var createPostController = require('../controller/createPostController');
+var createPostController = require('../Controller/createPostController');
 var auth = require('../middlewares/auth');
 var multiparty = require('connect-multiparty');
 var path = multiparty({uploadDir:'../uploads/posts'});
