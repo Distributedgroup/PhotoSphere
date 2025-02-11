@@ -1,38 +1,44 @@
 <?php
+require_once __DIR__ . '/../app.php';
 
-namespace Model;
+class User {
+    private $collection;
 
-use Jenssegers\Mongodb\Eloquent\Model;
+    public function __construct($db) {
+        $this->collection = $db->users;
+    }
 
-class User extends Model
-{
-    protected $connection = 'mongodb';
-    protected $collection = 'users';
+    public function findById($id, $db) {
+        try {
+            $user = $db->users->findOne(["_id" => new MongoDB\BSON\ObjectId($id)]);
 
-    protected $fillable = [
-        'names',
-        'surnames',
-        'email',
-        'country',
-        'profession',
-        'birth',
-        'gender',
-        'phone',
-        'avatar',
-        'frontPage',
-        'state',
-        'description',
-        'username',
-        'password',
-        'code_reset',
-    ];
+            if (!$user) {
+                return null;
+            }
 
-    protected $attributes = [
-        'avatar' => 'defecto.png',
-        'state' => false,
-    ];
-
-    protected $dates = ['birth', 'created_at', 'updated_at'];
-
-    public $timestamps = true;
+            // Convertir datos a un array asociativo compatible con el frontend
+            return [
+                "names" => $user["names"] ?? "",
+                "surnames" => $user["surnames"] ?? "",
+                "email" => $user["email"] ?? "",
+                "country" => $user["country"] ?? "",
+                "profession" => $user["profession"] ?? "",
+                "birth" => isset($user["birth"]) ? $user["birth"]->toDateTime()->format('Y-m-d') : "",
+                "gender" => $user["gender"] ?? "",
+                "phone" => $user["phone"] ?? "",
+                "avatar" => $user["avatar"] ?? "defecto.png",
+                "frontPage" => $user["frontPage"] ?? "",
+                "state" => $user["state"] ?? false,
+                "description" => $user["description"] ?? "",
+                "username" => $user["username"] ?? "",
+                "password" => "", // No exponer la contraseña
+                "code_reset" => "", // No exponer el código de reseteo
+                "createdAt" => isset($user["createdAt"]) ? $user["createdAt"]->toDateTime()->format('Y-m-d H:i:s') : "",
+            ];
+        } catch (Exception $e) {
+            error_log("Error fetching user by ID: " . $e->getMessage());
+            return null;
+        }
+    }
 }
+?>
