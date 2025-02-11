@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://52.1.158.25:27017/userservice")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://172.31.86.88:27017/userservice")
 
 client = AsyncIOMotorClient(MONGO_URI)
 db = client.userservice
