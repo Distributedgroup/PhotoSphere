@@ -41,6 +41,15 @@ export class ConfiguracionUsuarioComponent implements OnInit {
   }
 
   update(){
+    console.log("ID enviado:", this.user._id);
+    console.log("Token enviado:", this.token);
+    console.log("Datos enviados:", this.user);
+    
+    if (!this.user._id) {
+        console.error("Error: El ID del usuario no está definido");
+        return;
+    }
+    
     console.log(this.user);
     this._usuarioService.update_user(this.user._id,this.user,this.token).subscribe(
       response=>{
