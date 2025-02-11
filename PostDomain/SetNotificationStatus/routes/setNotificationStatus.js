@@ -1,5 +1,5 @@
 var express = require('express');
-var setNotificationStatusController = require('../controller/setNotificationStatusController');
+var setNotificationStatusController = require('../Controller/setNotificationStatusController');
 var auth = require('../middlewares/auth');
 var multiparty = require('connect-multiparty');
 var path = multiparty({uploadDir:'./uploads/posts'});
