@@ -5,11 +5,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://52.1.158.25:27017/userservice")
+from motor.motor_asyncio import AsyncIOMotorClient
 
-client = AsyncIOMotorClient(MONGO_URI)
-db = client.userservice
-users_collection = db["users"]
+client = AsyncIOMotorClient("mongodb://172.31.86.88:27017")
+db = client["userservice"]
+print(db.list_collection_names())
 
 class User(BaseModel):
     names: str
