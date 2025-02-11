@@ -1,7 +1,7 @@
 const { mysqlPool } = require('../app'); // Importar conexión MySQL
-const Post = require('../models/Post'); // Usa MongoDB `socialN`
-const Notification = require('../models/Notification'); // Usa MongoDB `socialP`
-const { getFriends } = require('../models/User_Friend'); // Funciones para MySQL
+const Post = require('../Models/Post'); // Usa MongoDB `socialN`
+const Notification = require('../Models/Notification'); // Usa MongoDB `socialP`
+const { getFriends } = require('../Models/User_Friend'); // Funciones para MySQL
 const fs = require('fs');
 const path = require('path');
 
