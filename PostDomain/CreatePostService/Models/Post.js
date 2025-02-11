@@ -1,11 +1,18 @@
-const connections = require('../app');
-
 const mongoose = require('mongoose');
-const { mongoConn2 } = require('../app');
 
-if (!mongoConn2) {
-    throw new Error("❌ Error: mongoConn2 no está definido en Post.js");
-}
+const MONGO_URI_2 = "mongodb://13.216.36.116:27017/socialP"; // IP de la segunda base de datos
+const mongoConn2 = mongoose.createConnection(MONGO_URI_2, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+mongoConn2.on('error', err => {
+    console.error("❌ Error conectando a MongoDB 2 en Post.js:", err);
+});
+
+mongoConn2.once('open', () => {
+    console.log("✅ Conectado correctamente a MongoDB 2 en Post.js");
+});
 
 const Schema = mongoose.Schema;
 
