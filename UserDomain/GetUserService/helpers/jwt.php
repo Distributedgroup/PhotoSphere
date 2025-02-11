@@ -5,8 +5,8 @@ class JWTHandler {
     public static function createToken($user) {
         $payload = [
             "sub" => $user["_id"],
-            "nombres" => $user["names"],
-            "apellidos" => $user["surnames"],
+            "names" => $user["names"],
+            "surnames" => $user["surnames"],
             "email" => $user["email"],
             "iat" => time(),
             "exp" => time() + (30 * 24 * 60 * 60) // 30 days
