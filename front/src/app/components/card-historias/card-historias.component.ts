@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HistoriaService } from 'src/app/services/historia.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 declare var e:any;
-import { io } from "socket.io-client";
+
+//import { io } from "socket.io-client";
 import { GLOBAL } from 'src/app/services/GLOBAL';
 declare var $:any;
 declare var tns:any;
@@ -19,7 +20,7 @@ export class CardHistoriasComponent implements OnInit {
   public msm_story_error = '';
   public str_image : any = '';
   public image : any = undefined;
-  public socket = io("http://54.172.88.33",{transports: ['websocket']});
+  //public socket = io("http://localhost:4201",{transports: ['websocket']});
   public historias : Array<any> = [];
   public url = GLOBAL.url;
   public load_historias = true;
