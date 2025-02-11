@@ -2,6 +2,11 @@ const connections = require('../app');
 const mongoConn2 = connections.mongoConn2;
 const mongoose = require('mongoose');
 
+mongoose.connect("mongodb://13.216.36.116:27017/socialP", { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("✅ Conexión manual a MongoDB exitosa"))
+    .catch(err => console.error("❌ Error en conexión manual a MongoDB:", err));
+
+
 if (!mongoConn2) {
     throw new Error("❌ Error: mongoConn2 no está definido en Post.js");
 }
