@@ -32,6 +32,9 @@ io.on("connection", (socket) => {
     });
 });
 
+// Configuración de MongoDB con reintentos
+const MONGO_URI = process.env.MONGO_URI || "mongodb://52.1.158.25:27017/userservice";
+
 const connectWithRetry = () => {
     console.log("⏳ Intentando conectar a MongoDB...");
     mongoose.connect(MONGO_URI, {
