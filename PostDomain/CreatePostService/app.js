@@ -100,12 +100,9 @@ Promise.all([
     console.error("❌ Error inicializando bases de datos:", err);
 });
 
-if (!mongoConn2) {
-    console.error("❌ Error: mongoConn2 no se inicializó correctamente en app.js.");
-} else {
-    console.log("✅ mongoConn2 inicializado correctamente en app.js.");
-}
-
+console.log("🔹 Estado de las conexiones a MongoDB:");
+console.log("   - mongoConn1:", mongoConn1 ? "✅ Definido" : "❌ No definido");
+console.log("   - mongoConn2:", mongoConn2 ? "✅ Definido" : "❌ No definido");
 // 🔹 Exportar conexiones para ser usadas en modelos
 module.exports = {
     app,
