@@ -12,4 +12,4 @@ const PostSchema = new Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoConn1.model('post', PostSchema);
+module.exports = mongoConn2.model('post', PostSchema);
