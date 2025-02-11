@@ -11,7 +11,7 @@ export class ConfiguracionUsuarioComponent implements OnInit {
   public token = localStorage.getItem('token');
   public usuario :any = {};
   public user : any = {
-    geder: '',
+    gender: '',
     description: '',
   };
   public msm_succes = '';
