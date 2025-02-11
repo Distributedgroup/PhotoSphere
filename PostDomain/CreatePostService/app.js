@@ -11,11 +11,11 @@ const port = process.env.PORT || 5063;
 const httpServer = createServer(app);
 const io = new Server(httpServer, { /* options */ });
 
-// 🔹 URLs de conexión (Cambia las IPs por las correctas)
+// 🔹 URLs conexion
 const MONGO_URI_1 = "mongodb://52.201.91.213:27017/socialN";
 const MONGO_URI_2 = "mongodb://13.216.36.116:27017/socialP";
 const MYSQL_CONFIG = {
-    host: "54.226.242.133",  // Cambia con la IP de la instancia EC2 de MySQL
+    host: "54.226.242.133", 
     user: "root",
     password: "claveSegura@123",
     database: "socialUF",
