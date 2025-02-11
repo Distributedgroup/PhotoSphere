@@ -51,22 +51,6 @@ $app->get('/api/get_user/{id}', function (Request $request, Response $response, 
     return $controller->getUser($request, $response, $args);
 })->add('authMiddleware'); // Apply middleware here
 
-// Middleware para habilitar CORS en Slim
-$app->add(function ($request, $handler) {
-    $response = $handler->handle($request);
-    return $response
-        ->withHeader('Access-Control-Allow-Origin', '*') // Permite acceso desde cualquier origen
-        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-        ->withHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, Accept');
-});
-
-// Manejar preflight requests de CORS (Método OPTIONS)
-$app->options('/{routes:.+}', function (Request $request, Response $response) {
-    return $response->withHeader('Access-Control-Allow-Origin', '*')
-        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-        ->withHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, Accept')
-        ->withStatus(200);
-});
 
 // Run the application
 $app->run();
