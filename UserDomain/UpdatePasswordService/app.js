@@ -1,16 +1,16 @@
-require('dotenv').config(); // environment variables
+require('dotenv').config();
 var express = require('express');
 var mongoose = require('mongoose');
 var bodyparser = require('body-parser');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 
-var app = express(); // 
+var app = express();
 const port = process.env.PORT || 5055;
 
-const userRoutes = require('./routes/updatePassword'); 
-app.use(express.json());  
-app.use("/api", userRoutes); 
+const userRoutes = require('./routes/updatePassword');
+app.use(express.json());
+app.use("/api", userRoutes);
 
 // Setting up Server with Socket.io
 const httpServer = createServer(app);
@@ -19,41 +19,43 @@ const io = new Server(httpServer, { /* options */ });
 io.on("connection", (socket) => {
     console.log('✅ Socket conectado');
 
-    socket.on('send-invitacion', function (data) {
-        io.emit('new-invitacion', data);
-    });
-
-    socket.on('set-invitacion', function (data) {
-        io.emit('set-new-invitacion', data);
-    });
-
-    socket.on('on-notifacion', function (data) {
-        io.emit('emit-notifacion', data);
-    });
+    socket.on('send-invitacion', (data) => io.emit('new-invitacion', data));
+    socket.on('set-invitacion', (data) => io.emit('set-new-invitacion', data));
+    socket.on('on-notifacion', (data) => io.emit('emit-notifacion', data));
 });
 
-// Connect to MongoDB in Docker on EC2
+// Configuración de MongoDB con reintentos
 const MONGO_URI = process.env.MONGO_URI || "mongodb://52.1.158.25:27017/userservice";
 
-mongoose.connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}, (err, res) => {
-    if (err) {
-        console.error("❌ Error connecting to MongoDB:", err);
-    } else {
-        httpServer.listen(port, function () {
-            console.log("✅ Server running on port " + port);
-            console.log("✅ Connected to MongoDB in Docker on EC2");
-        });
-    }
-});
+const connectWithRetry = () => {
+    console.log("⏳ Intentando conectar a MongoDB...");
+    mongoose.connect(MONGO_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 5000,  // Reducimos el timeout para evitar esperas largas
+        connectTimeoutMS: 10000, 
+    })
+    .then(() => {
+        console.log("✅ Conectado a MongoDB en Docker en EC2");
 
-// Configure Middleware
+        // Iniciar el servidor solo después de una conexión exitosa
+        httpServer.listen(port, () => {
+            console.log("✅ Servidor corriendo en el puerto " + port);
+        });
+    })
+    .catch((err) => {
+        console.error("❌ Error al conectar con MongoDB. Reintentando en 5 segundos...", err);
+        setTimeout(connectWithRetry, 5000);  // Reintentar cada 5 segundos
+    });
+};
+
+connectWithRetry();
+
+// Configurar Middleware
 app.use(bodyparser.urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyparser.json({ limit: '50mb', extended: true }));
 
-// Configure CORS
+// Configurar CORS
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Access-Control-Allow-Request-Method');
