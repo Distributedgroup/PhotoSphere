@@ -14,4 +14,4 @@ var NotificationSchema = Schema({
     createdAt: {type: Date, default: Date.now},
 });
 
-module.exports = mongoose.model('notification',NotificationSchema);
+module.exports = mongoose.model('notifications',NotificationSchema);
