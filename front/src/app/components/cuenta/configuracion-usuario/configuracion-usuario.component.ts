@@ -11,7 +11,7 @@ export class ConfiguracionUsuarioComponent implements OnInit {
   public token = localStorage.getItem('token');
   public usuario :any = {};
   public user : any = {
-    gender: '',
+    geder: '',
     description: '',
   };
   public msm_succes = '';
@@ -21,23 +21,23 @@ export class ConfiguracionUsuarioComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.user = JSON.parse(localStorage.getItem('usuario')!);
+    this.usuario = JSON.parse(localStorage.getItem('usuario')!);
     this.init_usuario();
   }
 
   init_usuario(){
-    this._usuarioService.get_user(this.user._id,this.token).subscribe(
+    this._usuarioService.get_user(this.usuario._id,this.token).subscribe(
       response=>{
         this.user = response.data;
         if(!this.user.gender) this.user.gender = '';
-        if(!this.user.description)   this.user.description = '';
+        if(!this.user.description) this.user.description = '';
   
       }
     );
   }
 
   validate_descripcion(){
-   if(this.user.description.length > 300) this.user.description= this.user.description.substring(0,300);
+   if(this.user.description.length > 300) this.user.description = this.user.descripcion.substring(0,300);
   }
 
   update(){
