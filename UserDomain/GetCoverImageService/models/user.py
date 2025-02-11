@@ -5,11 +5,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://admin:secret@ec2-18-207-77-6.compute-1.amazonaws.com:27017/userservice?authSource=admin")
-
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://52.1.158.25:27017/userservice")
 client = AsyncIOMotorClient(MONGO_URI)
 db = client.userservice
-users_collection = db["users"]
+users_collection = db["users"]  # Asegúrate de que esta línea existe
 
 class User(BaseModel):
     names: str
