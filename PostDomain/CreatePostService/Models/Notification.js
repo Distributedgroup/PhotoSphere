@@ -13,4 +13,4 @@ const NotificationSchema = new Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoConn2.model('notifications', NotificationSchema);
+module.exports = mongoConn1.model('notifications', NotificationSchema);
