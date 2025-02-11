@@ -27,7 +27,7 @@ export class UsuarioService {
   }
 
   get_user(id:any,token:any):Observable<any>{
-    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':`Bearer ${token}`});
     return this._http.get(this.url+'get_user/'+id,{headers:headers})
   }
 
