@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const { mongoConn1 } = require('../app'); // Importar la conexión correcta
+const connections = require('../app');
+const mongoConn1 = connections.mongoConn1;
+
 const Schema = mongoose.Schema;
 
 const NotificationSchema = new Schema({
