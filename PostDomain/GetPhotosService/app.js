@@ -1,57 +1,92 @@
-var express = require('express');
-var port = process.env.PORT || 4201;
-var mongoose = require('mongoose');
-var bodyparser = require('body-parser');
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyparser = require('body-parser');
+const mysql = require('mysql2/promise');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+const cors = require('cors');
 
-
-var app = express();
-
+const app = express();
+const port = process.env.PORT || 5064;
 const httpServer = createServer(app);
 const io = new Server(httpServer, { /* options */ });
 
-io.on("connection", (socket) => {
-    // ...
-    console.log('socket connected');
-    socket.on('send-invitacion',function(data){
-        io.emit('new-invitacion',data);
-    });
+const MONGO_URI_1 = "mongodb://52.201.91.213:27017/socialN";
+const MONGO_URI_2 = "mongodb://52.1.158.25:27017/userservice";
 
-    socket.on('set-invitacion',function(data){
-        //origen-destinario
-        io.emit('set-new-invitacion',data);
-    });
-
-    socket.on('on-notifacion',function(data){
-
-        io.emit('emit-notifacion',data);
-    });
+// 🔹 Conexiones a MongoDB
+const mongoConn1 = mongoose.createConnection(MONGO_URI_1, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 });
 
-var getPhotos_routes = require('./routes/getPhotos');
-
-
-mongoose.connect('mongodb://127.0.0.1:27017/social',(err,res)=>{
-    if(err) console.log(err);
-    else httpServer.listen(port,function(){
-        console.log("Servidor corriento " + port);
-    });
+const mongoConn2 = mongoose.createConnection(MONGO_URI_2, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 });
 
-app.use(bodyparser.urlencoded({limit: '50mb',extended:true}));
-app.use(bodyparser.json({limit: '50mb', extended: true}));
 
-app.use((req,res,next)=>{
-    res.header('Access-Control-Allow-Origin','*'); 
-    res.header('Access-Control-Allow-Headers','Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Access-Control-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods','GET, PUT, POST, DELETE, OPTIONS');
-    res.header('Allow','GET, PUT, POST, DELETE, OPTIONS');
+// 🔹 Manejo de errores en MongoDB
+mongoConn1.on('error', console.error.bind(console, '❌ Error en MongoDB 1:'));
+mongoConn2.on('error', console.error.bind(console, '❌ Error en MongoDB 2:'));
+
+mongoConn1.once('open', () => console.log("✅ Conectado a MongoDB 1"));
+mongoConn2.once('open', () => console.log("✅ Conectado a MongoDB 2"));
+
+// 🔹 Middleware
+app.use(cors());
+app.use(bodyparser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyparser.json({ limit: '50mb', extended: true }));
+
+// 🔹 Configurar CORS
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); 
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+    res.header('Allow', 'GET, PUT, POST, DELETE, OPTIONS');
     next();
 });
 
-
+// 🔹 Rutas de API
+var getPhotos_routes = require('./routes/getPhotos');
 app.use('/api',getPhotos_routes);
 
+// 🔹 WebSockets con Socket.IO
+io.on("connection", (socket) => {
+    console.log('✅ Socket conectado');
 
-module.exports = app;
+    socket.on('send-invitacion', function (data) {
+        io.emit('new-invitacion', data);
+    });
+
+    socket.on('set-invitacion', function (data) {
+        io.emit('set-new-invitacion', data);
+    });
+
+    socket.on('on-notifacion', function (data) {
+        io.emit('emit-notifacion', data);
+    });
+});
+
+// 🔹 Esperar conexiones a MongoDB antes de iniciar el servidor
+Promise.all([
+    mongoConn1.asPromise(),
+    mongoConn2.asPromise()
+]).then(() => {
+    httpServer.listen(port, () => {
+        console.log(`🚀 Servidor corriendo en el puerto ${port}`);
+    });
+}).catch(err => {
+    console.error("❌ Error inicializando bases de datos:", err);
+});
+
+console.log("🔹 Estado de las conexiones a MongoDB:");
+console.log("   - mongoConn1:", mongoConn1 ? "✅ Definido" : "❌ No definido");
+console.log("   - mongoConn2:", mongoConn2 ? "✅ Definido" : "❌ No definido");
+
+// 🔹 Exportar conexiones para ser usadas en modelos
+module.exports = {
+    app,
+    mongoConn1, // Base de datos `socialN`
+    mongoConn2 // Base de datos `user`
+};
