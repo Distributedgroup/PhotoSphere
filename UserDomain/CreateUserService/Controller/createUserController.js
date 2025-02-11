@@ -22,7 +22,7 @@ const create_user = async function (req, res) {
 
     if (users.length == 0) {
         let usersnames = [];
-        usersnames.push(data.nombres+''+data.apellidos);
+        usersnames.push(data.names+''+data.surnames);
 
         const config = {
             dictionaries: [usersnames],
