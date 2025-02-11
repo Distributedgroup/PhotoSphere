@@ -24,7 +24,7 @@ jobs:
 
       - name: Construir imagen Docker
         run: |
-          cd UserDomain/ValidateUserService
+          cd UserDomain/ValidateCodeService
           docker build -t alevm98/validatecodeservice:latest .
           docker images | grep validatecodeservice || echo "🚨 Imagen no encontrada localmente"
 
