@@ -100,4 +100,10 @@ Promise.all([
     console.error("❌ Error inicializando bases de datos:", err);
 });
 
-module.exports = app;
+// 🔹 Exportar conexiones para ser usadas en modelos
+module.exports = {
+    app,
+    mongoConn1, // Base de datos `socialN`
+    mongoConn2, // Base de datos `socialP`
+    mysqlPool  // Base de datos `socialUF`
+};
