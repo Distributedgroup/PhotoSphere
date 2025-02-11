@@ -1,5 +1,5 @@
 var express = require('express');
-var getNotificationsController= require('../controller/getNotificationsController');
+var getNotificationsController= require('../Controller/getNotificationsController');
 var auth = require('../middlewares/auth');
 var multiparty = require('connect-multiparty');
 var path = multiparty({uploadDir:'./uploads/posts'});
