@@ -17,10 +17,10 @@ const update_user = async function(req, res) {
         let user = await User.findByIdAndUpdate(id, {
             names: data.names || userExists.names,
             surnames: data.surnames || userExists.surnames,
-            genrer: data.genrer || userExists.genrer,
+            gender: data.gender || userExists.gender,
             birth: data.birth || userExists.birth,
             profession: data.profession || userExists.profession,
-            telephone: data.telephone || userExists.telephone,
+            phone: data.phone || userExists.phone,
             description: data.description || userExists.description
         }, { new: true }); // `new: true` returns the updated document
 
