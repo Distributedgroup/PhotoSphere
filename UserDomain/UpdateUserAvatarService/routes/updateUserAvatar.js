@@ -2,7 +2,7 @@ var express = require('express');
 var updateUserAvatarController = require('../Controller/updateUserAvatarController');
 var auth = require('../middlewares/auth');
 var multiparty = require('connect-multiparty');
-//var path = multiparty({uploadDir:'./uploads/stories'});
+var path = multiparty({uploadDir:'./uploads/stories'});
 
 
 var app = express.Router();
