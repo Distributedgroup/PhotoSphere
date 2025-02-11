@@ -22,11 +22,17 @@ jobs:
           docker logout
           echo "${{ secrets.DOCKER_PASSWORDAV }}" | docker login -u "${{ secrets.DOCKER_USERNAMEAV }}" --password-stdin
 
+      - name: Verificar contenido del repositorio
+        run: |
+          ls -la UserDomain/ValidateCodeService
+
+
       - name: Construir imagen Docker
         run: |
           cd UserDomain/ValidateCodeService
-          docker build -t alevm98/validatecodeservice:latest .
+          docker build --no-cache -t alevm98/validatecodeservice:latest .
           docker images | grep validatecodeservice || echo "🚨 Imagen no encontrada localmente"
+
 
       - name: Subir imagen a Docker Hub
         run: | 
