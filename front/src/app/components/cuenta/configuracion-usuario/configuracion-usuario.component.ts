@@ -21,12 +21,12 @@ export class ConfiguracionUsuarioComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.user = JSON.parse(localStorage.getItem('user')!);
+    this.user = JSON.parse(localStorage.getItem('usuario')!);
     this.init_usuario();
   }
 
   init_usuario(){
-    this._usuarioService.get_usuario(this.user._id,this.token).subscribe(
+    this._usuarioService.get_user(this.user._id,this.token).subscribe(
       response=>{
         this.user = response.data;
         if(!this.user.gender) this.user.gender = '';
