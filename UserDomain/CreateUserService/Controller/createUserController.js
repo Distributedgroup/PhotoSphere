@@ -37,7 +37,7 @@ const create_user = async function (req, res) {
                     return res.status(500).send({ message: "Error encrypting password" });
                 }
                 data.password = hash;
-                data.username = '@' + uniqueUsernameGenerator(config);
+                data.username = '@'+uniqueUsernameGenerator(config);
 
                 let user = await Usuario.create(data); 
                 res.status(200).send({ data: user });
