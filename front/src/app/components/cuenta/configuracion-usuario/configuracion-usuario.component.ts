@@ -37,7 +37,7 @@ export class ConfiguracionUsuarioComponent implements OnInit {
   }
 
   validate_descripcion(){
-   if(this.user.description.length > 300) this.user.description = this.user.descripcion.substring(0,300);
+   if(this.user.description.length > 300) this.user.description = this.user.description.substring(0,300);
   }
 
   update(){
