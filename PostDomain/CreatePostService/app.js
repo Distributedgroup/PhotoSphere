@@ -18,6 +18,10 @@ app.use(cors());
 app.use(bodyparser.urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyparser.json({ limit: '50mb', extended: true }));
 
+const postRoutes = require('./routes/createPost');
+app.use(express.json());
+app.use("/api", postRoutes);
+
 app.use((req,res,next)=>{
     res.header('Access-Control-Allow-Origin','*'); 
     res.header('Access-Control-Allow-Headers','Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Access-Control-Allow-Request-Method');
@@ -27,7 +31,7 @@ app.use((req,res,next)=>{
 });
 
 
-app.use('/api',createPost_routes);
+
 
 // 🔹 WebSockets con Socket.IO
 io.on("connection", (socket) => {
@@ -37,7 +41,7 @@ io.on("connection", (socket) => {
     socket.on('on-notifacion', (data) => io.emit('emit-notifacion', data));
 });
 
-var createPost_routes = require('./routes/createPost');
+
 
 
 const mongoConn1 = mongoose.createConnection(MONGO_URI_1, {
