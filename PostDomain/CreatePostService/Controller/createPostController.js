@@ -28,6 +28,9 @@ const create_post = async function(req, res) {
 
 
             for (let item of friends) {
+                let firstName = req.user.names ? req.user.names.split(' ')[0] : 'Usuario';
+                let lastName = req.user.surnames ? req.user.surnames.split(' ')[0] : '';
+
                 let description = `${req.user.names.split(' ')[0]} ${req.user.surnames.split(' ')[0]} ha creado una nueva publicación`;
 
                 // Crear notificación en MongoDB `socialP`
