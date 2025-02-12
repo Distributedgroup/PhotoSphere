@@ -1,4 +1,4 @@
-const { mongoConn1 } = require('../app'); // Importar la conexión de app.js
+const { mongoConn1 } = require('../app');  // Importa correctamente `mongoConn1`
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -21,5 +21,7 @@ const UserSchema = new Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
-// 🔹 Usa `mongoConn1` en lugar de la conexión global de mongoose
-module.exports = mongoConn1.model('User', UserSchema);
+// 🔹 Usa `mongoConn1` para definir el modelo
+const User = mongoConn1.model('User', UserSchema);
+
+module.exports = User;
