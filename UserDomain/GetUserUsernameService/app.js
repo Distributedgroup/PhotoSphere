@@ -17,9 +17,9 @@ app.use(cors());
 app.use(bodyparser.urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyparser.json({ limit: '50mb', extended: true }));
 
-const postRoutes = require('./routes/createPost');
-app.use(express.json());
-app.use("/api", postRoutes);
+const userRoutes = require('./routes/getUserUsername'); 
+app.use(express.json());  
+app.use("/api", userRoutes); 
 
 app.use((req,res,next)=>{
     res.header('Access-Control-Allow-Origin','*'); 
