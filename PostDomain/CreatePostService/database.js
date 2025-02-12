@@ -3,7 +3,7 @@ const mysql = require('mysql2/promise');
 // 🔹 Configuración de conexión a MySQL
 const MYSQL_CONFIG = {
     host: "54.226.242.133",
-    user: "root",
+    user: "admin",
     password: "claveSegura@123",
     database: "socialUF",
     waitForConnections: true,
