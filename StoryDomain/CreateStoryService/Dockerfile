@@ -29,8 +29,8 @@ RUN mkdir -p /root/uploads/covers /root/uploads/posts /root/uploads/stories
 # Asignar permisos de escritura a la carpeta de uploads
 RUN chmod -R 777 /root/uploads
 
-# Exponer el puerto en el que corre el servicio
-EXPOSE 8080
+# Exponer el puerto correcto (4201 según Postman)
+EXPOSE 4201
 
 # Comando de inicio del contenedor
 CMD ["./CreateStoryService"]
