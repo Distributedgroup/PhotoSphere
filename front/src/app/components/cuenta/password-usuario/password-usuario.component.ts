@@ -13,7 +13,7 @@ export class PasswordUsuarioComponent implements OnInit {
 
   public token = localStorage.getItem('token');
   public password_actual = '';
-  public password_nueva = '';
+  public new_password = '';
   public password_conf_nueva = '';
   public nivel_password = 0;
   public user :any = {};
@@ -69,20 +69,20 @@ export class PasswordUsuarioComponent implements OnInit {
   actualizar(){
     if(!this.password_actual){
       this.error_msm = 'La contraseña actual es requerida';
-    }else if(!this.password_nueva){
+    }else if(!this.new_password){
       this.error_msm = 'La nueva contraseña es requerida';
     }else if(this.nivel_password != 4){
       this.error_msm = 'Tu contraseña no es segura';
     }else if(!this.password_conf_nueva){
       this.error_msm = 'La confirmación es requerida';
-    }else if(this.password_nueva != this.password_conf_nueva){
+    }else if(this.new_password != this.password_conf_nueva){
       this.error_msm = 'Las contraseñas no coinciden';
     }else{
       this.error_msm = '';
-      console.log(this.password_nueva);
+      console.log(this.new_password);
       this._usuarioService.update_password(this.user._id,{
         password_actual: this.password_actual,
-        password_nueva: this.password_nueva
+        new_password: this.new_password
       },this.token).subscribe(
         response=>{
           console.log(response);
