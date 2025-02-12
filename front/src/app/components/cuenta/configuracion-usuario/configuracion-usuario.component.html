@@ -24,7 +24,7 @@
                 <!-- Title START -->
                 <div class="card-header border-0 pb-0">
                 <h1 class="h5 card-title">Configuración de cuenta</h1>
-                <p class="mb-0"></p>
+                <p class="mb-0">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corporis facere voluptatem excepturi architecto ad rerum asperiores, atque modi placeat soluta.</p>
                 </div>
                 <!-- Card header START -->
                 <!-- Card body START -->
@@ -42,17 +42,17 @@
                     <!-- First name -->
                     <div class="col-sm-6 col-lg-4">
                     <label class="form-label">Nombres</label>
-                    <input type="text" class="form-control" placeholder="Nombres" name="nombres" [(ngModel)]="user.names">
+                    <input type="text" class="form-control" placeholder="Nombres" name="nombres" [(ngModel)]="usuario.names">
                     </div>
                     <!-- Last name -->
                     <div class="col-sm-6 col-lg-4">
                     <label class="form-label">Apellidos</label>
-                    <input type="text" class="form-control" placeholder="Apellidos" name="apellidos" [(ngModel)]="user.surnames">
+                    <input type="text" class="form-control" placeholder="Apellidos" name="apellidos" [(ngModel)]="usuario.surnames">
                     </div>
                     <!-- Additional name -->
                     <div class="col-sm-6 col-lg-4">
                     <label class="form-label">Genero</label>
-                        <select class="form-control" id="" name="genero" [(ngModel)]="user.gender">
+                        <select class="form-control" id="" name="genero" [(ngModel)]="usuario.gender">
                             <option value="" selected disabled>Seleccionar</option>
                             <option value="Masculino">Masculino</option>
                             <option value="Femenino">Femenino</option>
@@ -62,37 +62,37 @@
                     <!-- User name -->
                     <div class="col-sm-6 col-lg-4">
                     <label class="form-label">Username</label>
-                    <input type="text" class="form-control" placeholder="" readonly [value]="user.username">
+                    <input type="text" class="form-control" placeholder="" readonly [value]="usuario.username">
                     </div>
                     <div class="col-sm-6 col-lg-4">
                         <label class="form-label">Profesion </label>
-                        <input type="text" class="form-control" placeholder="Profesion" name="profesion" [(ngModel)]="user.profession">
+                        <input type="text" class="form-control" placeholder="Profesion" name="profesion" [(ngModel)]="usuario.profession">
                     </div>
                     <!-- Birthday -->
                     <div class="col-sm-6 col-lg-4">
                     <label class="form-label">Nacimiento </label>
-                    <input type="date" class="form-control" name="nacimiento" [(ngModel)]="user.birth">
+                    <input type="date" class="form-control" name="nacimiento" [(ngModel)]="usuario.birth">
                     </div>
                     <!-- Allow checkbox -->
                     
                     <!-- Phone number -->
                     <div class="col-sm-6">
                     <label class="form-label">Telefono</label>
-                    <input type="text" class="form-control" placeholder="Telefono" name="telefono" [(ngModel)]="user.phone">
+                    <input type="text" class="form-control" placeholder="Telefono" name="telefono" [(ngModel)]="usuario.phone">
                     <!-- Add new number -->
                     </div>
                     <!-- Phone number -->
                     
                     <div class="col-sm-6">
                     <label class="form-label">Email</label>
-                    <input type="text" class="form-control" placeholder="Email" readonly [value]="user.email">
+                    <input type="text" class="form-control" placeholder="Email" readonly [value]="usuario.email">
                    
                     </div>
                     <!-- Page information -->
                     <div class="col-12">
                     <label class="form-label">Sobre mí</label>
-                    <textarea class="form-control" rows="4" placeholder="Sobre mí persona" name="descripcion" [(ngModel)]="user.description" (keyup)="validate_descripcion()"></textarea>
-                    <small>Limite de caracteres: {{user.description.length}}</small>
+                    <textarea class="form-control" rows="4" placeholder="Sobre mí persona" name="descripcion" [(ngModel)]="usuario.description" (keyup)="validate_descripcion()"></textarea>
+                    <small>Limite de caracteres: {{usuario.descripcion.length}}</small>
                     </div>
                     <!-- Button  -->
                     <div class="col-12 text-end">
