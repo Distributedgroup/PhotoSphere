@@ -9,8 +9,8 @@ import { UsuarioService } from 'src/app/services/usuario.service';
 export class ConfiguracionUsuarioComponent implements OnInit {
 
   public token = localStorage.getItem('token');
-  public usuario :any = {};
-  public user : any = {
+  public user :any = {};
+  public usuario : any = {
     gender: '',
     description: '',
   };
@@ -21,32 +21,28 @@ export class ConfiguracionUsuarioComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.usuario = JSON.parse(localStorage.getItem('usuario')!);
+    this.user = JSON.parse(localStorage.getItem('user')!);
     this.init_usuario();
   }
 
   init_usuario(){
-    this._usuarioService.get_user(this.usuario._id,this.token).subscribe(
+    this._usuarioService.get_user(this.user._id,this.token).subscribe(
       response=>{
-        console.log("Respuesta del backend:", response);
-        this.user = response.data ? response.data : {};   // Asegura que no sea undefined
-
-        if(!this.user.gender) this.user.gender = '';
-        if(!this.user.description) this.user.description = '';
+        this.usuario = response.data;
+        if(!this.usuario.gender) this.usuario.gender = '';
+        if(!this.usuario.description) this.usuario.description = '';
   
       }
     );
   }
 
   validate_descripcion(){
-   if(this.user.description.length > 300) this.user.description = this.user.description.substring(0,300);
+   if(this.usuario.description.length > 300) this.usuario.description = this.usuario.description.substring(0,300);
   }
 
   update(){
-
-
-    console.log(this.user);
-    this._usuarioService.update_user(this.user._id,this.user,this.token).subscribe(
+    console.log(this.usuario);
+    this._usuarioService.update_user(this.usuario._id,this.usuario,this.token).subscribe(
       response=>{
         console.log(response);
         if(response.data != undefined){
