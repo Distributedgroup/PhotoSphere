@@ -1,14 +1,9 @@
-const db = require('../database'); // Importamos `database.js`
+const { getMySQLPool } = require('../database'); // Importamos la función para obtener MySQL
 
-// Verificar si la conexión MySQL está disponible antes de usarla
-if (!db.mysqlPool) {
-    throw new Error("❌ Error: `mysqlPool` no está definido en User_friend.js. Asegúrate de que `database.js` se ha ejecutado correctamente.");
-}
-
-// Crear tabla si no existe
-(async () => {
+async function setupUserFriendTable() {
     try {
-        const connection = await db.mysqlPool.getConnection();
+        const mysqlPool = await getMySQLPool();
+        const connection = await mysqlPool.getConnection();
         await connection.query(`
             CREATE TABLE IF NOT EXISTS user_friend (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -24,15 +19,21 @@ if (!db.mysqlPool) {
     } catch (error) {
         console.error("❌ Error al verificar la tabla `user_friend`:", error);
     }
-})();
+}
 
-// Función para agregar una amistad
+// Ejecutamos la función para asegurarnos de que la tabla existe
+setupUserFriendTable();
+
+// 🔹 Función para agregar una amistad
 const addFriend = async (user_origin, user_friend) => {
     try {
-        const [result] = await db.mysqlPool.query(
+        const mysqlPool = await getMySQLPool();
+        const connection = await mysqlPool.getConnection();
+        const [result] = await connection.query(
             "INSERT INTO user_friend (user_origin, user_friend) VALUES (?, ?)",
             [user_origin, user_friend]
         );
+        connection.release();
         return result;
     } catch (error) {
         console.error("❌ Error agregando amigo:", error);
@@ -40,13 +41,16 @@ const addFriend = async (user_origin, user_friend) => {
     }
 };
 
-// Función para obtener amigos de un usuario
+// 🔹 Función para obtener amigos de un usuario
 const getFriends = async (userId) => {
     try {
-        const [rows] = await db.mysqlPool.query(
+        const mysqlPool = await getMySQLPool();
+        const connection = await mysqlPool.getConnection();
+        const [rows] = await connection.query(
             "SELECT user_friend FROM user_friend WHERE user_origin = ?",
             [userId]
         );
+        connection.release();
         return rows;
     } catch (error) {
         console.error("❌ Error obteniendo amigos:", error);
