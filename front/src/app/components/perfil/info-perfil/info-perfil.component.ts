@@ -76,7 +76,7 @@ export class InfoPerfilComponent implements OnInit {
           if(tipo == 'Portada'){
             this.msm_error_portada = '';
             console.log(file);
-            this._userService.actualizar_portada_usuario({portada:file},this.token).subscribe(
+            this._userService.update_user_cover({portada:file},this.token).subscribe(
               response=>{
                 console.log(response);
                 this.init_user();
@@ -84,7 +84,7 @@ export class InfoPerfilComponent implements OnInit {
             );
           }else if(tipo == 'Avatar'){
             this.msm_error_portada = '';
-            this._userService.actualizar_avatar_usuario({avatar:file},this.token).subscribe(
+            this._userService.update_user_avatar({avatar:file},this.token).subscribe(
               response=>{
                 console.log(response);
                 this.init_user();
