@@ -1,4 +1,5 @@
 var User = require('../Model/User'); 
+const bcrypt = require('bcrypt'); 
 
 const reset_password = async function(req,res){
     var email = req.params['email'];
@@ -11,7 +12,7 @@ const reset_password = async function(req,res){
             await User.findByIdAndUpdate({_id:user._id},{
                 password: hash
             });
-            res.status(200).send({data:usuario});
+            res.status(200).send({data:user});
         });
     });
 }
