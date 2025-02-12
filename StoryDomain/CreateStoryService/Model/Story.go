@@ -11,5 +11,5 @@ type Story struct {
 	Image     string             `bson:"image" json:"image"`
 	User      primitive.ObjectID `bson:"user,omitempty" json:"user"`
 	Exp       time.Time          `bson:"exp" json:"exp"`
-	CreatedAt time.Time          `bson:"createdAt,omitempty" json:"createdAt,omitempty"`
+	CreatedAt time.Time          `bson:"createdAt,omitempty" json:"createdAt,omitempty`
 }
