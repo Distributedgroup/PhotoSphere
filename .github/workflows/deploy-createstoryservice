@@ -1,1 +1,80 @@
-asfsaf
+name: Deploy CreateStoryService
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'PostDomain/CreateStoryService/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+      
+    - name: Forzar autenticación en Docker Hub
+      run: |
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin || exit 1
+        docker logout
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        
+    - name: Construir imagen Docker
+      run: |
+        cd UserDomain/CreateUserService
+        docker build -t fernanyag20/createstoryservice:latest .
+        docker images | grep createstoryservice || echo "🚨 Imagen no encontrada localmente"
+
+    - name: Subir imagen a Docker Hub
+      run: | 
+        docker push fernanyag20/createstoryservice:latest
+        echo "✅ Imagen subida a Docker Hub"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Iniciar sesión en Docker Hub en EC2
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST_USERDOMAINII}}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Conectar a EC2 y actualizar contenedor
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST_USERDOMAINII }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+            echo "🛠 Verificando si Docker está instalado..."
+            if ! command -v docker &> /dev/null
+            then
+                echo "⚠️ Docker no está instalado. Instalándolo..."
+                sudo apt update -y
+                sudo apt install -y docker.io
+                sudo systemctl enable docker
+                sudo systemctl start docker
+            else
+                echo "✅ Docker ya está instalado."
+            fi
+
+            echo "🔄 Eliminando imágenes antiguas..."
+            docker stop createstoryservice:latest || echo "No existía un contenedor en ejecución"
+            docker rm createstoryservice || echo "No existía un contenedor previo"
+            docker rmi fernanyag20/createstoryservice:latest || echo "No había imagen previa para eliminar"
+
+            echo "📥 Descargando nueva imagen desde Docker Hub..."
+            docker pull fernanyag20/createstoryservice:latest || { echo "🚨 Error al hacer pull de la imagen"; exit 1; }
+
+            echo "🚀 Iniciando nuevo contenedor..."
+            docker run -d --name createstoryservice -p 4201:4201 fernanyag20/createstoryservice:latest
+
+            echo "🔍 Verificando contenedores activos..."
+            docker ps -a
