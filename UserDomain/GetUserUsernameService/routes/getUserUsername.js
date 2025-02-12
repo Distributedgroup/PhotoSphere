@@ -1,5 +1,5 @@
 var express = require('express');
-var historiasController = require('../Controllers/getUserUsernameController');
+var historiasController = require('../Controller/getUserUsernameController');
 var auth = require('../middlewares/auth');
 var multiparty = require('connect-multiparty');
 var path = multiparty({uploadDir:'./uploads/stories'});
