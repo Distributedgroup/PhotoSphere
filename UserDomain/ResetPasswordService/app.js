@@ -24,7 +24,7 @@ io.on("connection", (socket) => {
     socket.on('on-notifacion', (data) => io.emit('emit-notifacion', data));
 });
 
-// Configuración de MongoDB con reintentos
+// Setting with MongoDB con reintentos
 const MONGO_URI = process.env.MONGO_URI || "mongodb://52.1.158.25:27017/userservice";
 
 const connectWithRetry = () => {
