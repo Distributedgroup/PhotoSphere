@@ -1,32 +1,27 @@
-var jwt = require('jwt-simple');
+var jwt = require('jsonwebtoken'); // Usa jsonwebtoken en lugar de jwt-simple
 var moment = require('moment');
-var secret = '6M5X#D6%7Nh*!pkR3HL7F@Fdx';
+var secret = '6M5X#D6%7Nh*!pkR3HL7F@Fdx';  // Debes usar la misma clave secreta
 
 exports.auth = function(req, res, next) {
     if (!req.headers.authorization) {
         return res.status(403).send({ message: 'NoHeadersError' });
     }
 
-    var token = req.headers.authorization.replace(/['"]+/g, '');
-    console.log("Token recibido:", token);  // 🔍 Imprime el token en los logs
-
-    var segments = token.split('.');
-    if (segments.length !== 3) {
-        return res.status(403).send({ message: 'InvalidToken' });
-    }
+    var token = req.headers.authorization.split(" ")[1]; // Quitar "Bearer"
+    console.log("🔍 Token recibido:", token);
 
     try {
-        var payload = jwt.decode(token, secret);
-        console.log("Payload decodificado:", payload);  // 🔍 Verifica el contenido del token
+        var payload = jwt.verify(token, secret); // Verificar la firma del token
+        console.log("✅ Token decodificado correctamente:", payload);
 
         if (payload.exp <= moment().unix()) {
             return res.status(403).send({ message: 'TokenExpirado' });
         }
+
+        req.user = payload; // Guardar el usuario en la petición
+        next();
     } catch (error) {
-        console.log("Error al decodificar el token:", error);  // 🔍 Muestra el error exacto
+        console.log("❌ Error al decodificar el token:", error);
         return res.status(403).send({ message: 'ErrorToken', error: error.message });
     }
-
-    req.user = payload;
-    next();
 };
