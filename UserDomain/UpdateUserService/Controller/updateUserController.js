@@ -7,17 +7,17 @@ const update_user = async function(req,res){
 
         console.log(data);
 
-        var user = await User.findByIdAndUpdate({_id:id},{
+        var usuario = await User.findByIdAndUpdate({_id:id},{
             names: data.names,
             surnames: data.surnames,
             genrer: data.genrer,
             birth: data.birth,
             profession: data.profession,
-            phone: data.telephone,
+            phone: data.phone,
             description: data.description
         });
 
-        res.status(200).send({data:user});
+        res.status(200).send({data:usuario});
     } else {
         res.status(403).send({message: 'NoAccess'}); 
     }
