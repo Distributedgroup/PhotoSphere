@@ -1,4 +1,4 @@
-const Notification = require('../model/Notification');
+const Notification = require('../Model/Notification');
 var fs = require('fs');
 var path = require('path');
 
