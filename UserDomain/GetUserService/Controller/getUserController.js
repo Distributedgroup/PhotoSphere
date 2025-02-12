@@ -4,7 +4,7 @@ const get_user = async function(req,res){
         var id = req.params['id'];
 
         var user = await User.findById({_id:id});
-        res.status(200).send({data:usuario});
+        res.status(200).send({data:user});
     }else{
         res.status(403).send({message: 'NoAccess'}); 
     }
