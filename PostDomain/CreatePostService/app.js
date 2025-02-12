@@ -24,19 +24,37 @@ io.on("connection", (socket) => {
     socket.on('on-notifacion', (data) => io.emit('emit-notifacion', data));
 });
 
+const mongoConn1 = mongoose.createConnection(MONGO_URI_1, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+const mongoConn2 = mongoose.createConnection(MONGO_URI_2, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+// Verificar si mongoConn1 y mongoConn2 están definidos
+if (!mongoConn1 || !mongoConn2) {
+    console.error("❌ Error: mongoConn1 o mongoConn2 no están definidos.");
+    process.exit(1); // Detener la ejecución si hay error en la conexión
+}
+
 // 🔹 Manejo de eventos de conexión en MongoDB
-mongoConn1.on('connected', () => console.log("✅ Conectado a MongoDB 1"));
-mongoConn2.on('connected', () => console.log("✅ Conectado a MongoDB 2"));
+mongoConn1.once('open', () => console.log("✅ Conectado a MongoDB 1"));
+mongoConn2.once('open', () => console.log("✅ Conectado a MongoDB 2"));
 
 mongoConn1.on('error', (err) => console.error("❌ Error en MongoDB 1:", err));
 mongoConn2.on('error', (err) => console.error("❌ Error en MongoDB 2:", err));
 
-// 🔹 Iniciar el servidor después de confirmar conexiones
+// 🔹 Esperar conexiones a MongoDB antes de iniciar el servidor
 setTimeout(() => {
     httpServer.listen(port, () => {
         console.log(`🚀 Servidor corriendo en el puerto ${port}`);
     });
-}, 5000); // Se da un margen de 5 segundos para evitar errores de conexión
+}, 5000); // Espera para evitar errores de conexión
+
+
 
 // 🔹 Exportar conexiones para ser usadas en modelos
 module.exports = {
