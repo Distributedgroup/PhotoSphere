@@ -1,3 +1,4 @@
+var User = require('../Model/User'); 
 const get_user = async function(req,res){
     if(req.user){
         var id = req.params['id'];
