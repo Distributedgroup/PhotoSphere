@@ -1,3 +1,5 @@
+var User = require('../Model/User'); 
+
 const reset_password = async function(req,res){
     var email = req.params['email'];
     var data = req.body;
