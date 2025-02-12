@@ -41,7 +41,7 @@ func CreateStory(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "File upload error", http.StatusBadRequest)
 		return
-	
+	}
 	defer file.Close()
 
 	imgPath := filepath.Base("uploads/stories/image.jpg")
