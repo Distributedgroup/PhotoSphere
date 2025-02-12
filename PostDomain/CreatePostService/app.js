@@ -24,14 +24,19 @@ io.on("connection", (socket) => {
     socket.on('on-notifacion', (data) => io.emit('emit-notifacion', data));
 });
 
-// 🔹 Esperar conexiones a MongoDB antes de iniciar el servidor
-mongoConn1.once('open', () => {
-    mongoConn2.once('open', () => {
-        httpServer.listen(port, () => {
-            console.log(`🚀 Servidor corriendo en el puerto ${port}`);
-        });
+// 🔹 Manejo de eventos de conexión en MongoDB
+mongoConn1.on('connected', () => console.log("✅ Conectado a MongoDB 1"));
+mongoConn2.on('connected', () => console.log("✅ Conectado a MongoDB 2"));
+
+mongoConn1.on('error', (err) => console.error("❌ Error en MongoDB 1:", err));
+mongoConn2.on('error', (err) => console.error("❌ Error en MongoDB 2:", err));
+
+// 🔹 Iniciar el servidor después de confirmar conexiones
+setTimeout(() => {
+    httpServer.listen(port, () => {
+        console.log(`🚀 Servidor corriendo en el puerto ${port}`);
     });
-});
+}, 5000); // Se da un margen de 5 segundos para evitar errores de conexión
 
 // 🔹 Exportar conexiones para ser usadas en modelos
 module.exports = {
