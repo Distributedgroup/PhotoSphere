@@ -10,10 +10,12 @@ const create_post = async function(req, res) {
         try {
             let data = req.body;
 
-            if (data.tipo === 'Media') {
-                let img_path = req.files.media.path.split('\\')[2];
-                data.media = img_path;
+            if (data.type === 'media') {
+                let filePath = req.files.media.path;
+                let fileName = filePath.split('/').pop(); // Ojo: en Linux se usa `/`
+                data.media = fileName;
             }
+
 
             data.user = req.user.sub;
 
