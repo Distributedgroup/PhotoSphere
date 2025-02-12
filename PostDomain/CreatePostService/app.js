@@ -25,15 +25,12 @@ io.on("connection", (socket) => {
 });
 
 // 🔹 Esperar conexiones a MongoDB antes de iniciar el servidor
-Promise.all([
-    mongoConn1.asPromise(),
-    mongoConn2.asPromise()
-]).then(() => {
-    httpServer.listen(port, () => {
-        console.log(`🚀 Servidor corriendo en el puerto ${port}`);
+mongoConn1.once('open', () => {
+    mongoConn2.once('open', () => {
+        httpServer.listen(port, () => {
+            console.log(`🚀 Servidor corriendo en el puerto ${port}`);
+        });
     });
-}).catch(err => {
-    console.error("❌ Error inicializando bases de datos:", err);
 });
 
 // 🔹 Exportar conexiones para ser usadas en modelos
