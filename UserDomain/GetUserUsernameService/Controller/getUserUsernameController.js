@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../Model/User');
 const { getMySQLPool } = require('../database');
 
 const get_user_username = async function (req, res) {
