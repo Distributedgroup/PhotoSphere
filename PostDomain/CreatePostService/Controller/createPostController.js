@@ -24,6 +24,8 @@ const create_post = async function(req, res) {
 
             // Obtener amigos desde MySQL
             let friends = await getFriends(req.user.sub);
+            console.log('Amigos obtenidos:', friends);
+
 
             for (let item of friends) {
                 let description = `${req.user.names.split(' ')[0]} ${req.user.surnames.split(' ')[0]} ha creado una nueva publicación`;
