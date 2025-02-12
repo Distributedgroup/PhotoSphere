@@ -10,7 +10,7 @@ const update_user = async function(req,res){
         var user = await User.findByIdAndUpdate({_id:id},{
             names: data.names,
             surnames: data.surnames,
-            genrer: data.genrer,
+            gender: data.gender,
             birth: data.birth,
             profession: data.profession,
             phone: data.phone,
