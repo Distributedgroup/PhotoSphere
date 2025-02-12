@@ -11,7 +11,7 @@ const login_user = async function(req,res){
     if(user.length >= 1){
         //email exist
         bcrypt.compare(data.password, user[0].password, function(err, result) {
-            // result == true
+            // result = true
             if(!err){
                 //
                 if(result){
