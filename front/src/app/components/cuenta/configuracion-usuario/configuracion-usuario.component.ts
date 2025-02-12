@@ -31,7 +31,12 @@ export class ConfiguracionUsuarioComponent implements OnInit {
         this.usuario = response.data;
         if(!this.usuario.gender) this.usuario.gender = '';
         if(!this.usuario.description) this.usuario.description = '';
-  
+      // Convertir la fecha de MongoDB (ISO) a formato YYYY-MM-DD para el input date
+        // Convertir la fecha de MongoDB (ISO) a formato YYYY-MM-DD para el input date
+      if (this.usuario.birth) {
+        this.usuario.birth = new Date(this.usuario.birth).toISOString().split('T')[0]; 
+      }
+        
       }
     );
   }
