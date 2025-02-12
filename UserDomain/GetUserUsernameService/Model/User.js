@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 const MONGO_URI_1 = "mongodb://52.1.158.25:27017/userservice"; // IP de la segunda base de datos
 const mongoConn1 = mongoose.createConnection(MONGO_URI_1, {
