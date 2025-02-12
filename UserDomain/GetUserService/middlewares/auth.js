@@ -17,7 +17,7 @@ exports.auth = function(req, res, next) {
 
     try {
         var payload = jwt.decode(token, secret);
-        console.log("Payload decodificado:", payload);  // 🔍 Verifica el contenido del token
+        console.log("Payload decodificado:", payload);  // Verify content of token
 
         if (payload.exp <= moment().unix()) {
             return res.status(403).send({ message: 'TokenExpirado' });
