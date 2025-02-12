@@ -11,18 +11,16 @@ const MYSQL_CONFIG = {
     queueLimit: 0
 };
 
-// 🔹 Crear conexión a MySQL y asegurarse de que esté lista antes de exportarla
-let mysqlPool = null;
+// 🔹 Crear conexión a MySQL
+let mysqlPool;
 
-async function initMySQL() {
-    try {
+async function getMySQLPool() {
+    if (!mysqlPool) {
         mysqlPool = await mysql.createPool(MYSQL_CONFIG);
         console.log("✅ Conectado a MySQL en `database.js`");
-    } catch (error) {
-        console.error("❌ Error conectando a MySQL en `database.js`:", error);
     }
+    return mysqlPool;
 }
 
-initMySQL();
-
-module.exports = { mysqlPool };
+// Exportamos la función en lugar de la variable directamente
+module.exports = { getMySQLPool };
