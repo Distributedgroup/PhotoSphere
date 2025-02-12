@@ -17,5 +17,5 @@ func CreateToken(userID primitive.ObjectID, names string, surnames string, email
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte("6M5X#D6%7Nh*!pkR3HL7F@Fdx"))
+	return token.SignedString([]byte("6M5X#D6%7Nh*!pkR3HL7F@Fdx")
 }
