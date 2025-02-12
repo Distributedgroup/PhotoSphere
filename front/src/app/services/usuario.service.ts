@@ -100,11 +100,11 @@ export class UsuarioService {
   }
 
 
-  actualizar_avatar_usuario(data:any,token:any):Observable<any>{
+  update_user_avatar(data:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Authorization':token});
     const fd = new FormData();
     fd.append('avatar',data.avatar);
-    return this._http.post(this.url+'actualizar_avatar_usuario',fd,{headers:headers})
+    return this._http.post(this.url+'update_user_avatar',fd,{headers:headers})
   }
 
 
