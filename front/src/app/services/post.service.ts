@@ -19,10 +19,10 @@ export class PostService {
     let headers;
     let body;
     if(data.type == 'Texto'){
-      headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      headers = new HttpHeaders({'Content-Type':'application/json','Authorization': `Bearer ${token}`});
       body = data;
     }else if(data.type == 'Media'){
-      headers = new HttpHeaders({'Authorization':token});
+      headers = new HttpHeaders({'Authorization': `Bearer ${token}`});
       body = new FormData();
       body.append('media',data.media);
       body.append('content',data.content);
