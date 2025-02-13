@@ -13,12 +13,17 @@ export class RegistroComponent implements OnInit {
   public nivel_password = 0;
   public user :any = {};
   public msm_error = '';
-
+  showPassword: boolean = false;
+  
   constructor(
     private _usuarioService:UsuarioService,
     private _router:Router
   ) { }
-
+  
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+  
   ngOnInit(): void {
     setTimeout(() => {
       const myPassMeter = passwordStrengthMeter({
