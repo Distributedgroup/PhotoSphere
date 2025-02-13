@@ -1,0 +1,72 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "SendFriendshipInvitationService API",
+    "description": "API documentation for the SendFriendshipInvitationService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5069",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/send_friendship_invitation": {
+      "post": {
+        "summary": "Send friendship invitation",
+        "description": "Allows a user to send a friendship invitation to another user.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token required for authentication"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FriendshipInvitationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invitation sent successfully",
+            "schema": {
+              "$ref": "#/definitions/FriendshipInvitationResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden, authentication failed"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "FriendshipInvitationRequest": {
+      "type": "object",
+      "required": ["recipient_user"],
+      "properties": {
+        "recipient_user": {
+          "type": "string",
+          "description": "The ID of the recipient user"
+        }
+      }
+    },
+    "FriendshipInvitationResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "user_origin": { "type": "string" },
+            "recipient_user": { "type": "string" },
+            "createdAt": { "type": "string", "format": "date-time" }
+          }
+        }
+      }
+    }
+  }
+}
