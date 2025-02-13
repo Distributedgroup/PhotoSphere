@@ -73,10 +73,6 @@ docker run -d --name validatecodeservice -p 5060:5060 validatecodeservice
 ## Deployment with GitHub Actions
 This service is automatically built and deployed using **GitHub Actions**. The workflow file `deploy-validatecodeservice.yml` handles the CI/CD process.
 
-## Contributors
-- **Your Name** - Developer
-- **Your Team** - Contributors
-
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
