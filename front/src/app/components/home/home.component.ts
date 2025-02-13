@@ -147,24 +147,24 @@ export class HomeComponent implements OnInit {
 
       this.post.extract = this.post.content.substring(0,130);
       console.log(this.post);
-      this._postService.create_post(this.post,this.token).subscribe(
-        response=>{
-          if(response.data != undefined){
-              this.post.content = '';
-
-              this.socket.emit('on-notifacion',response.friends);
-
-              $('#createPost').modal('hide');
-              this.init_post(true);
-          }else{
-            console.log(response.message);
-            
-          }
+      this._postService.create_post(this.post, this.token).subscribe(
+        response => {
+            console.log("📌 Respuesta del servidor:", response);
+            if (response.data != undefined) {
+                this.post.content = '';
+                this.socket.emit('on-notificacion', response.friends);
+                $('#createPost').modal('hide');
+                this.init_post(true);
+            } else {
+                console.warn("⚠️ Error en la respuesta:", response.message);
+            }
+        },
+        error => {
+            console.error("❌ Error en la petición:", error);
         }
-      );
+    );    
     }
   }
-
   set_liked(id:any){
       this._postService.set_like_post({post:id},this.token).subscribe(
         response=>{
