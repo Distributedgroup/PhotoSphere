@@ -1,0 +1,110 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "CreateUserService API",
+    "description": "API documentation for the CreateUserService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5050",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/create_user": {
+      "post": {
+        "summary": "Create a new user",
+        "description": "Registers a new user and returns the user data.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User created successfully",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "400": {
+            "description": "Email already exists"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "required": ["names", "surnames", "email", "password"],
+      "properties": {
+        "names": {
+          "type": "string"
+        },
+        "surnames": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "password": {
+          "type": "string",
+          "format": "password"
+        },
+        "country": {
+          "type": "string"
+        },
+        "profession": {
+          "type": "string"
+        },
+        "birth": {
+          "type": "string",
+          "format": "date"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "UserResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string"
+            },
+            "names": {
+              "type": "string"
+            },
+            "surnames": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            },
+            "state": {
+              "type": "boolean"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    }
+  }
+}
