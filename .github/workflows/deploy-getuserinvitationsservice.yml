@@ -46,7 +46,7 @@ jobs:
       - name: Iniciar sesión en Docker Hub en EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.HOST_DNSAV }}
+          host: ${{ secrets.HOST_DNSAV2 }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEYAV }}
           script: |
@@ -56,7 +56,7 @@ jobs:
       - name: Conectar a EC2 y actualizar contenedor
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.HOST_DNSAV }}
+          host: ${{ secrets.HOST_DNSAV2 }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEYAV }}
           script: |
