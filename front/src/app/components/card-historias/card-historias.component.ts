@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { HistoriaService } from 'src/app/services/historia.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 declare var e:any;
-
 import { io } from "socket.io-client";
 import { GLOBAL } from 'src/app/services/GLOBAL';
 declare var $:any;
