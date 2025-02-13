@@ -37,7 +37,7 @@ export class PasswordUsuarioComponent {
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
-}
+
 
   ngOnInit(): void {
     this.user = JSON.parse(localStorage.getItem('user')!);
