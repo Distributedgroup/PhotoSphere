@@ -20,12 +20,19 @@
             <!-- New password -->
             <div class="mb-3 position-relative">
               <!-- Password -->
-              <div class="input-group input-group-lg">
-                <input class="form-control fakepassword" type="password" placeholder="Ingresa tu contraseña" name="password" [(ngModel)]="user.password">
-                <span class="input-group-text p-0">
-                  <i class="fakepasswordicon fa-solid fa-eye-slash cursor-pointer p-2 w-40px"></i>
+            <div class="input-group input-group-lg">
+                <input class="form-control fakepassword" 
+                       [type]="showPassword ? 'text' : 'password'"
+                       placeholder="Ingresa tu contraseña" 
+                       name="password" 
+                       [(ngModel)]="user.password">
+                <span class="input-group-text p-0" (click)="togglePasswordVisibility()">
+                    <i class="fakepasswordicon cursor-pointer p-2 w-40px"
+                       [ngClass]="showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'">
+                    </i>
                 </span>
-              </div>
+            </div>
+
             </div>
 
             <div *ngIf="msm_error" class="form-group" style="    padding-top: 1rem;
