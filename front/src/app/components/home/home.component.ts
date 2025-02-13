@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
   public avatar = '';
   public token = localStorage.getItem('token');
   public user : any = {};
-  public socket = io("http://52.6.140.97:5063",{transports: ['websocket']});
+  public socket = io("ws://52.6.140.97:5063",{transports: ['websocket']});
   public url = GLOBAL.url;
 
   public msm_story_error = '';
