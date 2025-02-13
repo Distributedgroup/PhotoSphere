@@ -14,8 +14,35 @@ app.use("/api", userRoutes);
 
 // Setting up Server with Socket.io
 const httpServer = createServer(app);
-const io = new Server(httpServer, { /* options */ });
+// Inicializa socket.io
+const io = new Server(httpServer, { /* opciones */ });
 
+io.use((socket, next) => {
+    // Obtener el token desde el objeto `handshake.auth`
+    const token = socket.handshake.auth.token;
+
+    console.log("🔍 Token recibido en WebSocket:", token); // Verificar que el token llega correctamente
+
+    // Si no se proporciona un token
+    if (!token) {
+        return next(new Error("jwt must be provided"));
+    }
+
+    try {
+        // Verificar el token usando jwt.verify
+        const payload = jwt.verify(token, secret); // Usar el mismo `secret` que usaste para crear el token
+        console.log("✅ Token decodificado correctamente:", payload);
+
+        // Almacenar el payload en `socket.user` para su uso posterior
+        socket.user = payload;
+
+        // Continuar con la conexión
+        next();
+    } catch (error) {
+        console.error("❌ Error al verificar el token:", error);
+        return next(new Error("Invalid Token"));
+    }
+});
 io.on("connection", (socket) => {
     console.log('✅ Socket conectado');
 
