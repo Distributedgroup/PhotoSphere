@@ -1,0 +1,49 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ResetPasswordService API",
+    "description": "API documentation for the ResetPasswordService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5067",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/reset_password/{email}": {
+      "post": {
+        "summary": "Reset user password",
+        "description": "Initiates a password reset process by verifying the email and sending reset instructions.",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The email address of the user requesting a password reset"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password reset email sent successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string" }
+              }
+            }
+          },
+          "404": {
+            "description": "Email does not exist",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}
