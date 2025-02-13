@@ -24,16 +24,6 @@ export class PasswordUsuarioComponent implements OnInit {
     private _usuarioService:UsuarioService,
     private _router:Router
   ) { }
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-password-usuario',
-  templateUrl: './password-usuario.component.html',
-  styleUrls: ['./password-usuario.component.css']
-})
-export class PasswordUsuarioComponent {
-  new_password: string = '';
-  showPassword: boolean = false;
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
