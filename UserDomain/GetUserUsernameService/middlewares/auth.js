@@ -1,30 +1,22 @@
 const jwt = require('jsonwebtoken');
-const moment = require('moment');
+const secret = '6M5X#D6%7Nh*!pkR3HL7F@Fdx';
 
-const secret = process.env.JWT_SECRET || '6M5X#D6%7Nh*!pkR3HL7F@Fdx';  // Use an environment variable
+exports.auth = function(req, res, next) {
+    if (!req.headers.authorization) {
+        return res.status(403).send({ message: 'NoHeadersError' });
+    }
 
-exports.auth = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1]; // Quitar "Bearer"
+    console.log("🔍 Token recibido:", token);
+
     try {
-        if (!req.headers.authorization) {
-            return res.status(403).send({ message: 'NoHeadersError: Token not provided' });
-        }
+        const payload = jwt.verify(token, secret); // Verificar la firma del token
+        console.log("✅ Token decodificado correctamente:", payload);
 
-        const token = req.headers.authorization.replace(/['"]+/g, '').split(' ')[1]; 
-
-        if (!token) {
-            return res.status(403).send({ message: 'InvalidToken: Token not found' });
-        }
-
-        const payload = jwt.verify(token, secret); // Verify the token
-
-        if (payload.exp <= moment().unix()) {
-            return res.status(403).send({ message: 'TokenExpired' });
-        }
-
-        req.user = payload; // Save user info in the request
+        req.user = payload;
         next();
     } catch (error) {
-        console.error("❌ JWT authentication error:", error);
-        return res.status(403).send({ message: 'ErrorToken: Invalid token', error });
+        console.log("❌ Error al decodificar el token:", error);
+        return res.status(403).send({ message: 'ErrorToken', error: error.message });
     }
 };
