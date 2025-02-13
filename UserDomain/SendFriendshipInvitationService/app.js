@@ -4,7 +4,7 @@ const bodyparser = require('body-parser');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const cors = require('cors');
-//const { mongoConn1, mongoConn2 } = require('./database'); // Importamos las conexiones
+
 
 const app = express();
 const port = process.env.PORT || 5069;
