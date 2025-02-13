@@ -1,0 +1,63 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "UpdateUserAvatarService API",
+    "description": "API documentation for the UpdateUserAvatarService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5056",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/update_user_avatar": {
+      "post": {
+        "summary": "Update user avatar",
+        "description": "Allows a user to update their avatar image.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token required for authentication"
+          },
+          {
+            "name": "avatar",
+            "in": "formData",
+            "required": true,
+            "type": "file",
+            "description": "User avatar image file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Avatar updated successfully",
+            "schema": {
+              "$ref": "#/definitions/UpdateAvatarResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden, authentication failed"
+          },
+          "400": {
+            "description": "Bad Request, missing avatar file"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UpdateAvatarResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "message": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
