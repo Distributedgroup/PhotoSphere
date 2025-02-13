@@ -6,6 +6,6 @@ var multiparty = require('connect-multiparty');
 
 var app = express.Router();
 
-app.get('/get_user_invitations/:type',auth.auth,getUserInvitationsController.get_user_invitations);
+app.get('/get_user_invitations/:type',auth.auth,getUserInvitationsController.get_user_invitation);
 
 module.exports = app;
