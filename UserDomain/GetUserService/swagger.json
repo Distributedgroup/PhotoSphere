@@ -1,0 +1,47 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "GetUserService API",
+    "description": "API documentation for the GetUserService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5068",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/get_user/{id}": {
+      "get": {
+        "summary": "Retrieve user information",
+        "description": "Fetches user details based on the provided user ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The unique identifier of the user"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token required for authentication"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response, returns user details"
+          },
+          "403": {
+            "description": "Forbidden, authentication failed"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}
