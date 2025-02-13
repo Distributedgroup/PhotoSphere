@@ -1,0 +1,56 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ValidateCodeService API",
+    "description": "API documentation for the ValidateCodeService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5060",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/validate_code/{code}/{email}": {
+      "get": {
+        "summary": "Validate reset code",
+        "description": "Validates if the provided reset code matches the stored reset code for the user",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The reset code to validate"
+          },
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The email of the user whose reset code is being validated"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Code validation result",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": { "type": "boolean" }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}
