@@ -1,0 +1,84 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "UpdatePasswordService API",
+    "description": "API documentation for the UpdatePasswordService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5055",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/update_password/{id}": {
+      "put": {
+        "summary": "Update user password",
+        "description": "Allows a user to update their password securely.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token required for authentication"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "User ID whose password is being updated"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdatePasswordRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password updated successfully",
+            "schema": {
+              "$ref": "#/definitions/UpdatePasswordResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden, authentication failed"
+          },
+          "400": {
+            "description": "Bad Request, incorrect current password"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UpdatePasswordRequest": {
+      "type": "object",
+      "required": ["password_actual", "new_password"],
+      "properties": {
+        "password_actual": {
+          "type": "string",
+          "description": "The user's current password"
+        },
+        "new_password": {
+          "type": "string",
+          "description": "The user's new password"
+        }
+      }
+    },
+    "UpdatePasswordResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "message": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
