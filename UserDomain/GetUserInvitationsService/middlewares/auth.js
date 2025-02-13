@@ -1,29 +1,26 @@
-var jwt = require('jwt-simple');
-var moment = require('moment');
-var secret = '6M5X#D6%7Nh*!pkR3HL7F@Fdx';
+const jwt = require('jsonwebtoken');
 
-exports.auth = function(req,res,next){
-    if(!req.headers.authorization){
-        return res.status(403).send({message: 'NoHeadersError'}); 
+// El secreto usado para firmar el token (si API Gateway usa un autenticador JWT)
+const secret = '6M5X#D6%7Nh*!pkR3HL7F@Fdx';
+
+exports.auth = function(req, res, next) {
+    console.log("🔍 Headers de la solicitud:", req.headers);  // Verifica que los headers lleguen correctamente
+
+    if (!req.headers.authorization) {
+        return res.status(403).send({ message: 'NoHeadersError' });
     }
 
-    var token = req.headers.authorization.replace(/['"]+/g,'');
+    const token = req.headers.authorization.split(" ")[1];  // Extrae el token
+    console.log("🔍 Token recibido:", token);  // Verifica el token recibido
 
-    var segment = token.split('.');
-    
-    if(segment.length != 3){
-        return res.status(403).send({message: 'InvalidToken'}); 
-    }else{
-        try {
-            var payload = jwt.decode(token,secret);
-            if(payload.exp <= moment().unix()) return res.status(403).send({message: 'TokenExpirado'}); 
-        } catch (error) {
-            console.log(error);
-            return res.status(403).send({message: 'ErrorToken'}); 
-        }
+    try {
+        const payload = jwt.verify(token, secret);  // Verificar la firma del token
+
+        console.log("✅ Token decodificado correctamente:", payload);
+        req.user = payload;
+        next();
+    } catch (error) {
+        console.log("❌ Error al decodificar el token:", error);
+        return res.status(403).send({ message: 'ErrorToken', error: error.message });
     }
-
-    req.user = payload;
-
-    next();
-}
+};
