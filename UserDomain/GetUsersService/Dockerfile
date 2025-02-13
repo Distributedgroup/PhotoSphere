@@ -47,4 +47,5 @@ RUN echo '<IfModule mod_rewrite.c>' > /var/www/html/.htaccess && \
 EXPOSE 80
 
 # Start command: start Apache in foreground
-CMD ["apache2-foreground"]
+CMD ["apache2ctl", "-D", "FOREGROUND", "-k", "start", "-C", "ServerName localhost"]
+
