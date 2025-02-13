@@ -44,8 +44,8 @@ const connectWithRetry = () => {
         });
     })
     .catch((err) => {
-        console.error("❌ Error al conectar con MongoDB. Reintentando en 5 segundos...", err);
-        setTimeout(connectWithRetry, 5000);  // Reintentar cada 5 segundos
+        console.error("❌ Error al conectar con MongoDB. Reintentando en 10 segundos...", err);
+        setTimeout(connectWithRetry, 10000);  // Reintentar cada 5 segundos
     });
 };
 
