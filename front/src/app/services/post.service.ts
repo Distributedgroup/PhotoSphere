@@ -19,7 +19,10 @@ export class PostService {
     let headers;
     let body;
     if(data.type == 'Texto'){
-      headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token || localStorage.getItem('token')}`  // Usar el token si lo pasas como parámetro o lo recuperas de localStorage
+    });
       body = data;
     }else if(data.type == 'Media'){
       headers = new HttpHeaders({'Authorization':token});
