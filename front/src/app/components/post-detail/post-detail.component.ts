@@ -16,7 +16,7 @@ export class PostDetailComponent implements OnInit {
   public token = localStorage.getItem('token');
   public id = '';
   public load_data = true;
-  public socket = io("http://54.172.88.33",{transports: ['websocket']});
+  public socket = io("http://52.6.140.97:5063",{transports: ['websocket']});
 
   constructor(
     private _postService:PostService,
