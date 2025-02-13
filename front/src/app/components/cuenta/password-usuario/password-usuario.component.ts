@@ -18,6 +18,7 @@ export class PasswordUsuarioComponent implements OnInit {
   public nivel_password = 0;
   public user :any = {};
   public error_msm = '';
+  showPassword: boolean = false;
 
   constructor(
     private _usuarioService:UsuarioService,
