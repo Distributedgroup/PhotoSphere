@@ -136,8 +136,6 @@ The pipeline will automatically build and deploy the service.
 
 ---
 
-## Contributors
-- **Your Name** - [GitHub](https://github.com/your-github)
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
