@@ -12,7 +12,7 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, { /* options */ });
 
 const MONGO_URI_1 = "mongodb://52.201.91.213:27017/socialN";
-const MONGO_URI_2 = "mongodb://13.216.36.116:27017/socialP";
+const MONGO_URI_2 = "mongodb://3.220.140.139:27017/userinvitation";
 // 🔹 Middleware
 app.use(cors());
 app.use(bodyparser.urlencoded({ limit: '50mb', extended: true }));
