@@ -11,7 +11,7 @@ const port = process.env.PORT || 5069;
 const httpServer = createServer(app);
 const io = new Server(httpServer, { /* options */ });
 
-const MONGO_URI_1 = "mongodb://52.201.91.213:27017/socialN";
+const MONGO_URI_1 = "mongodb://52.1.158.25:27017/userservice";
 const MONGO_URI_2 = "mongodb://3.220.140.139:27017/userinvitation";
 // 🔹 Middleware
 app.use(cors());
