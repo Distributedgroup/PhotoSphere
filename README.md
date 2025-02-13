@@ -86,4 +86,3 @@ Handles the creation and management of user stories.
 This system is a **scalable, microservices-based architecture** that integrates multiple **programming languages, databases, and cloud technologies**. It ensures **high availability, modularity, and maintainability** through its **containerized** and **automated CI/CD pipeline**.
 
 ---
-*For detailed documentation on each microservice, refer to the individual README files in their respective directories.*
