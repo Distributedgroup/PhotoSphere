@@ -36,7 +36,7 @@ app.use((req,res,next)=>{
 
 // 🔹 WebSockets con Socket.IO
 io.on("connection", (socket) => {
-    console.log('✅ Socket conectado');
+    console.log('✅ Socket conected');
     socket.on('send-invitacion', (data) => io.emit('new-invitacion', data));
     socket.on('set-invitacion', (data) => io.emit('set-new-invitacion', data));
     socket.on('on-notifacion', (data) => io.emit('emit-notifacion', data));
@@ -62,16 +62,16 @@ if (!mongoConn1 || !mongoConn2) {
 }
 
 // 🔹 Manejo de eventos de conexión en MongoDB
-mongoConn1.once('open', () => console.log("✅ Conectado a MongoDB 1"));
-mongoConn2.once('open', () => console.log("✅ Conectado a MongoDB 2"));
+mongoConn1.once('open', () => console.log("✅ Conected to MongoDB 1"));
+mongoConn2.once('open', () => console.log("✅ Conected to MongoDB 2"));
 
-mongoConn1.on('error', (err) => console.error("❌ Error en MongoDB 1:", err));
-mongoConn2.on('error', (err) => console.error("❌ Error en MongoDB 2:", err));
+mongoConn1.on('error', (err) => console.error("❌ Error in MongoDB 1:", err));
+mongoConn2.on('error', (err) => console.error("❌ Error in MongoDB 2:", err));
 
 // 🔹 Esperar conexiones a MongoDB antes de iniciar el servidor
 setTimeout(() => {
     httpServer.listen(port, () => {
-        console.log(`🚀 Servidor corriendo en el puerto ${port}`);
+        console.log(`🚀 Server running in port: ${port}`);
     });
 }, 5000); // Espera para evitar errores de conexión
 
