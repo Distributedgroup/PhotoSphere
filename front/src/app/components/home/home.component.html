@@ -69,7 +69,7 @@
                       <div>
                         <div class="nav nav-divider">
                           <h6 class="nav-item .postcard-title mb-0"> 
-                            <a [routerLink]="['/cuenta/'+item.post.usuario.username+'/posts']"> {{item.post.usuario.nombres}} {{item.post.usuario.apellidos}}</a>
+                            <a [routerLink]="['/cuenta/'+item.post.usuario.username+'/posts']"> {{item.post.usuario.names}} {{item.post.usuario.surnames}}</a>
                           </h6>
                           <span class="nav-item small"> {{item.post.createdAt|dateAgo}}</span>
                         </div>
@@ -168,8 +168,8 @@
                             <div class="d-flex justify-content-between">
                               <h6 class="mb-1"> 
                                 <a href="#!">
-                                  {{subitem.comentario.usuario.nombres.split(' ')[0]}}
-                                  {{subitem.comentario.usuario.apellidos.split(' ')[0]}}
+                                  {{subitem.comentario.usuario.names.split(' ')[0]}}
+                                  {{subitem.comentario.usuario.surnames.split(' ')[0]}}
                                 </a>
                               </h6>
                               <small class="ms-2">{{subitem.comentario.createdAt|dateAgo}}</small>
@@ -214,8 +214,8 @@
                                 <div class="d-flex justify-content-between">
                                   <h6 class="mb-1"> 
                                     <a href="#!"> 
-                                      {{replay.usuario.nombres.split(' ')[0]}}
-                                      {{replay.usuario.apellidos.split(' ')[0]}} 
+                                      {{replay.usuario.names.split(' ')[0]}}
+                                      {{replay.usuario.surnames.split(' ')[0]}} 
                                     </a> 
                                   </h6>
                                   <small class="ms-2">{{replay.createdAt|dateAgo}}</small>
