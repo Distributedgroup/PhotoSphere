@@ -16,8 +16,12 @@ let mysqlPool;
 
 async function getMySQLPool() {
     if (!mysqlPool) {
-        mysqlPool = await mysql.createPool(MYSQL_CONFIG);
-        console.log("✅ Conectado a MySQL en `database.js`");
+        try {
+            mysqlPool = await mysql.createPool(MYSQL_CONFIG);
+            console.log("✅ Conectado a MySQL en `database.js`");
+        } catch (error) {
+            console.error("❌ Error al conectar a MySQL:", error);
+        }
     }
     return mysqlPool;
 }
