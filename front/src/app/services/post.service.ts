@@ -18,21 +18,20 @@ export class PostService {
   create_post(data:any,token:any):Observable<any>{
     let headers;
     let body;
-    if(data.tipo == 'Texto'){
+    if(data.type == 'Texto'){
       headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
       body = data;
-    }else if(data.tipo == 'Media'){
+    }else if(data.type == 'Media'){
       headers = new HttpHeaders({'Authorization':token});
       body = new FormData();
       body.append('media',data.media);
-      body.append('contenido',data.contenido);
-      body.append('extracto',data.extracto);
-      body.append('tipo',data.tipo);
-      body.append('privacidad',data.privacidad);
+      body.append('contenido',data.content);
+      body.append('extracto',data.extract);
+      body.append('tipo',data.type);
+      body.append('privacidad',data.privacy);
     }
     return this._http.post(this.url+'create_post',body,{headers:headers})
   }
-
   get_post_amigos(limit:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.get(this.url+'get_post_amigos/'+limit,{headers:headers})
