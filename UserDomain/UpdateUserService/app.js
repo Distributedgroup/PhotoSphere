@@ -8,6 +8,18 @@ const { Server } = require("socket.io");
 var app = express();
 const port = process.env.PORT || 5051;
 
+// Importar el middleware de autenticación
+const auth = require('./middlewares/auth');  // Ajusta la ruta si tu archivo está en otra carpeta
+
+// Middleware de autenticación para todas las rutas que requieren validación
+app.use(auth.auth);
+
+// Rutas de tu API
+app.get('/updateUser', (req, res) => {
+    console.log("👤 Usuario autenticado:", req.user);  // Accede a los datos del usuario desde req.user
+    res.send("Usuario actualizado exitosamente");
+});
+
 const userRoutes = require('./routes/updateUser');
 app.use(express.json());
 app.use("/api", userRoutes);
