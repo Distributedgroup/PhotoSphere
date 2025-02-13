@@ -10,7 +10,7 @@ mongoConn2.on('error', err => {
     console.error("❌ Error conectando a MongoDB 2 en User_invitation.js:", err);
 });
 
-mongoConn1.once('open', () => {
+mongoConn2.once('open', () => {
     console.log("✅ Conectado correctamente a MongoDB 2 en User_invitation.js");
 });
 
