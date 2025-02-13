@@ -1,0 +1,47 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "GetUserUsernameService API",
+    "description": "API documentation for the GetUserUsernameService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5066",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/get_user_username/{username}": {
+      "get": {
+        "summary": "Retrieve user information by username",
+        "description": "Fetches user details and friendship count based on the provided username.",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The username of the user"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token required for authentication"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response, returns user details and friend count"
+          },
+          "403": {
+            "description": "Forbidden, authentication failed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}
