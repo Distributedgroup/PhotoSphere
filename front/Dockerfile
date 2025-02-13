@@ -1,30 +1,27 @@
-# Etapa de construcción
-FROM node:18-alpine AS build
+# Etapa 1: Construcción de la aplicación Angular
+FROM node:18 AS build-stage
 
 WORKDIR /app
 
-# Copiar package.json y package-lock.json
+# Copiar los archivos del proyecto
 COPY package*.json ./
-
-# Instalar dependencias
 RUN npm install
 
-# Copiar el código fuente
 COPY . .
 
-# Construir la aplicación Angular
+# Compilar la aplicación Angular en modo producción
 RUN npm run build --prod
 
-# Etapa de producción con Nginx
-FROM nginx:alpine
+# Etapa 2: Servir la aplicación con Nginx
+FROM nginx:latest AS production-stage
 
-# Copiar archivos de la aplicación al servidor Nginx
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copiar la aplicación construida al directorio de Nginx
+COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-# Copiar configuración personalizada de Nginx
+# Copiar archivo de configuración de Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Exponer el puerto 80
+# Exponer el puerto 80 para recibir tráfico
 EXPOSE 80
 
 # Iniciar Nginx
