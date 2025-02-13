@@ -20,7 +20,7 @@ export class PostsPerfilComponent implements OnInit {
   public user: any = {};
   public n_amigos = 0;
   public url = GLOBAL.url;
-  public socket = io("http://54.172.88.33",{transports: ['websocket']});
+  public socket = io("http://52.6.140.97:5063",{transports: ['websocket']});
   public posts : Array<any> = [];
 
   constructor(
