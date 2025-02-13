@@ -39,7 +39,7 @@ export class WidgetsPerfilComponent implements OnInit {
 
   init_user(){
     this.load_data = true;
-    this._userService.obtener_usuario_username(this.username,this.token).subscribe(
+    this._userService.get_user_username(this.username,this.token).subscribe(
       response=>{
         if(response.data != undefined){
           this.data = true;
