@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
   public avatar = '';
   public token = localStorage.getItem('token');
   public user : any = {};
-  public socket = io("http://localhost:4201",{transports: ['websocket']});
+  public socket = io("http://54.172.88.33",{transports: ['websocket']});
   public url = GLOBAL.url;
 
   public msm_story_error = '';
@@ -28,8 +28,8 @@ export class HomeComponent implements OnInit {
   public image : any = undefined;
 
   public post : any = {
-    tipo: 'Texto',
-    privacidad: 'Solo yo' //Solo yo, Amigos
+    type: 'Texto',
+    privacy: 'Solo yo' //Solo yo, Amigos
   };
 
   public posts :Array<any> = [];
@@ -91,7 +91,8 @@ export class HomeComponent implements OnInit {
   }
 
   init_post(load:any){
-    if(load)this.load_data = true;
+    this.load_data = true;
+    
     this._postService.get_post_amigos(this.limit,this.token).subscribe(
       response=>{
 
@@ -113,7 +114,7 @@ export class HomeComponent implements OnInit {
           }
         }
 
-        /* this.posts.sort((a:any, b:any) => {
+        this.posts.sort((a:any, b:any) => {
           const nameA = new Date(a.post.createdAt).getTime(); 
           const nameB = new Date(b.post.createdAt).getTime(); 
           console.log(nameA);
@@ -127,8 +128,8 @@ export class HomeComponent implements OnInit {
           }
         
           return 0;
-        }); */
-        if(load)this.load_data = false;
+        }); 
+        this.load_data = false;
         console.log(this.posts);
         
       }
@@ -136,22 +137,22 @@ export class HomeComponent implements OnInit {
   }
 
   createPost(){
-    if(!this.post.contenido){
+    if(!this.post.content){
       //
     }else{
       this.post.media = this.image;
 
-      if(this.post.media != undefined) this.post.tipo = 'Media'
-      else this.post.tipo = 'Texto';
+      if(this.post.media != undefined) this.post.type = 'Media'
+      else this.post.type = 'Texto';
 
-      this.post.extracto = this.post.contenido.substring(0,130);
+      this.post.extract = this.post.content.substring(0,130);
       console.log(this.post);
       this._postService.create_post(this.post,this.token).subscribe(
         response=>{
           if(response.data != undefined){
-              this.post.contenido = '';
+              this.post.content = '';
 
-              this.socket.emit('on-notifacion',response.amigos);
+              this.socket.emit('on-notifacion',response.friends);
 
               $('#createPost').modal('hide');
               this.init_post(true);
