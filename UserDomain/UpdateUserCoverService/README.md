@@ -115,8 +115,5 @@ $ docker run -d --restart unless-stopped --name updateusercoverservice -p 5061:5
 ## License
 MIT License
 
-## Contact
-For any issues or suggestions, please contact:
-- **Your Name**: [your-email@example.com](mailto:your-email@example.com)
-- **GitHub**: [https://github.com/your-profile](https://github.com/your-profile)
+
 
