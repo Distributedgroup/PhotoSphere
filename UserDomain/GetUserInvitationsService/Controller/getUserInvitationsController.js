@@ -1,3 +1,6 @@
+const User = require('../Model/User'); 
+const User_invitation = require('../Model/User_invitation'); 
+
 const get_user_invitation = async function(req,res){
     if (req.user) {
         let type = req.params['type'];
