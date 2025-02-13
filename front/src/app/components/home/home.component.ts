@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
   public avatar = '';
   public token = localStorage.getItem('token');
   public user : any = {};
-  public socket = io("ws://54.172.88.33:4201", { transports: ['websocket'] });
+  public socket = io("http://localhost:4201",{transports: ['websocket']});
   public url = GLOBAL.url;
 
   public msm_story_error = '';
@@ -91,8 +91,7 @@ export class HomeComponent implements OnInit {
   }
 
   init_post(load:any){
-    this.load_data = true;
-    
+    if(load)this.load_data = true;
     this._postService.get_post_amigos(this.limit,this.token).subscribe(
       response=>{
 
@@ -114,7 +113,7 @@ export class HomeComponent implements OnInit {
           }
         }
 
-        this.posts.sort((a:any, b:any) => {
+        /* this.posts.sort((a:any, b:any) => {
           const nameA = new Date(a.post.createdAt).getTime(); 
           const nameB = new Date(b.post.createdAt).getTime(); 
           console.log(nameA);
@@ -128,8 +127,8 @@ export class HomeComponent implements OnInit {
           }
         
           return 0;
-        }); 
-        this.load_data = false;
+        }); */
+        if(load)this.load_data = false;
         console.log(this.posts);
         
       }
