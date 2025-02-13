@@ -1,3 +1,10 @@
+<ng-container *ngIf="load_data">
+    <div class="text-center py-3" style="margin-top: 1rem;">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</ng-container>
 <ng-container *ngIf="!load_data">
     <div class="card">
         <!-- Cover image -->
@@ -20,14 +27,10 @@
                 <div class="ms-sm-4 mt-sm-3">
                     <!-- Info -->
                     <h1 class="mb-0 h5">
-                        {{cuenta.names}} {{cuenta.surnames}} 
+                        {{cuenta.nombres}} {{cuenta.apellidos}} 
                         <i class="bi bi-patch-check-fill text-success small"></i></h1>
-                    <p>{{n_friends}} amigo(s)</p>
+                    <p>{{n_amigos}} amigo(s)</p>
                 </div>
-
-                <h1 *ngIf="cuenta && cuenta.names"> {{cuenta.names}} {{cuenta.surnames}} </h1>
-                <p *ngIf="cuenta && cuenta.email">{{cuenta.email}}</p>
-
                 <!-- Button -->
                 <div class="d-flex mt-3 justify-content-center ms-sm-auto">
                     <a *ngIf="cuenta._id == user._id" class="btn btn-primary-soft me-2" [routerLink]="['/cuenta/configuracion']"> <i class="bi bi-pencil-fill pe-1"></i> Editar perfíl </a>
@@ -36,7 +39,7 @@
             <!-- List profile -->
             <ul class="list-inline mb-0 text-center text-sm-start mt-3 mt-sm-0">
                 <li class="list-inline-item"><i class="bi bi-briefcase me-1"></i> 
-                    {{cuenta.profession}}
+                    {{cuenta.profesion}}
                 </li>
                 <li class="list-inline-item"><i class="bi bi-geo-alt me-1"></i> 
                     {{cuenta.email}}    
