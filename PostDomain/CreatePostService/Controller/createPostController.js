@@ -28,21 +28,29 @@ const create_post = async function(req, res) {
             console.log('Usuario autenticado:', req.user);
 
 
-            for (let item of friends) {
-                let firstName = req.user.names ? req.user.names.split(' ')[0] : 'Usuario';
-                let lastName = req.user.surnames ? req.user.surnames.split(' ')[0] : '';
+            
+                for (let item of friends) {
+                    try {
+                        let firstName = req.user.names ? req.user.names.split(' ')[0] : 'Usuario';
+                        let lastName = req.user.surnames ? req.user.surnames.split(' ')[0] : '';
+                
+                        let description = `${firstName} ${lastName} ha creado una nueva publicación`;
+                
+                        let notification = await Notification.create({
+                            type: 'Publicaciones',
+                            description,
+                            user_interaction: req.user.sub,
+                            user: item.user_friend,
+                            post: post._id
+                        });
+                
+                        console.log('✅ Notificación creada:', notification);
+                    } catch (error) {
+                        console.error('❌ Error al crear la notificación:', error);
+                    }
+                }
 
-                let description = `${req.user.names.split(' ')[0]} ${req.user.surnames.split(' ')[0]} ha creado una nueva publicación`;
-
-                // Crear notificación en MongoDB `socialP`
-                await Notification.create({
-                    type: 'Publicaciones',
-                    description,
-                    user_interaction: req.user.sub,
-                    user: item.user_friend,
-                    post: post._id
-                });
-            }
+            
 
             res.status(200).send({ data: post, friends });
         } catch (error) {
