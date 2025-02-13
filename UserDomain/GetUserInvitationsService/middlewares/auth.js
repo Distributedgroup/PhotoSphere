@@ -11,7 +11,7 @@ exports.auth = function(req, res, next) {
     }
 
     const token = req.headers.authorization.split(" ")[1];  // Extrae el token
-    console.log("🔍 Token recibido:", token);  // Verifica el token recibido
+    console.log("🔍 Token recibed:", token);  // Verifica el token recibido
 
     try {
         const payload = jwt.verify(token, secret);  // Verificar la firma del token
