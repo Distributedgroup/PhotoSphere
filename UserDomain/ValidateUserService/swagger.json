@@ -1,0 +1,54 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ValidateUserService API",
+    "description": "API documentation for the ValidateUserService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5053",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/validate_user": {
+      "post": {
+        "summary": "Validate user existence and send reset code",
+        "description": "Checks if a user exists based on email and sends a reset code.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": { "type": "string" }
+              },
+              "required": ["email"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Validation successful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": { "type": "boolean" }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}
