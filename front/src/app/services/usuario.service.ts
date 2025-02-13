@@ -97,24 +97,23 @@ export class UsuarioService {
     return this._http.get(this.url+'obtener_usuarios/'+filtro,{headers:headers})
   }
 
-  obtener_usuario_username(username:any,token:any):Observable<any>{
+  get_user_username(username:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-    return this._http.get(this.url+'obtener_usuario_username/'+username,{headers:headers})
+    return this._http.get(this.url+'get_user_username/'+username,{headers:headers})
   }
 
-  actualizar_portada_usuario(data:any,token:any):Observable<any>{
+  update_user_cover(data:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Authorization':token});
     const fd = new FormData();
     fd.append('portada',data.portada);
-    return this._http.post(this.url+'actualizar_portada_usuario',fd,{headers:headers})
+    return this._http.post(this.url+'update_user_cover',fd,{headers:headers})
   }
 
-
-  actualizar_avatar_usuario(data:any,token:any):Observable<any>{
+  update_user_avatar(data:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Authorization':token});
     const fd = new FormData();
     fd.append('avatar',data.avatar);
-    return this._http.post(this.url+'actualizar_avatar_usuario',fd,{headers:headers})
+    return this._http.post(this.url+'update_user_avatar',fd,{headers:headers})
   }
 
 
