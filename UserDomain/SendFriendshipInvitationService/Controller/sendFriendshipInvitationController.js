@@ -1,4 +1,4 @@
-
+const User = require('../Model/User'); 
 const User_invitation = require('../Model/User_invitation'); 
 
 
