@@ -1,7 +1,7 @@
 # Using an official PHP image with Apache
 FROM php:8.2-apache
 
-# Install necessary extensions
+# Install necessary extensions to work
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
