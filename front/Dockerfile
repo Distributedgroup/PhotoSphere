@@ -19,7 +19,8 @@ FROM nginx:latest AS production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 # Copiar archivo de configuración de Nginx
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY ./default.conf /etc/nginx/conf.d/default.conf
+
 
 # Exponer el puerto 80 para recibir tráfico
 EXPOSE 80
