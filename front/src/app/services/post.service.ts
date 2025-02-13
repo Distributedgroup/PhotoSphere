@@ -19,13 +19,10 @@ export class PostService {
     let headers;
     let body;
     if(data.type == 'Texto'){
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token || localStorage.getItem('token')}`  // Usar el token si lo pasas como parámetro o lo recuperas de localStorage
-    });
+      headers = new HttpHeaders({'Content-Type':'application/json','Authorization':'Authorization': `Bearer ${token}`});
       body = data;
     }else if(data.type == 'Media'){
-      headers = new HttpHeaders({'Authorization':token});
+      headers = new HttpHeaders({'Authorization': `Bearer ${token}`});
       body = new FormData();
       body.append('media',data.media);
       body.append('contenido',data.content);
@@ -36,7 +33,7 @@ export class PostService {
     return this._http.post(this.url+'create_post',body,{headers:headers})
   }
   get_post_amigos(limit:any,token:any):Observable<any>{
-    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization': `Bearer ${token}`});
     return this._http.get(this.url+'get_post_amigos/'+limit,{headers:headers})
   }
 
