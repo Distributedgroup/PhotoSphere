@@ -33,13 +33,17 @@ export class UsuarioService {
 
 
   update_user(id: any, data: any, token: any): Observable<any> {
-  let headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`  // Asegúrate de que 'token' sea el valor real del token JWT
-  });
+    // Verificar si el token existe en localStorage
+    console.log("🔍 Token recuperado:", localStorage.getItem('token'));
   
-  return this._http.put(this.url + 'update_user/' + id, data, { headers: headers });
-}
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token || localStorage.getItem('token')}`  // Usar el token si lo pasas como parámetro o lo recuperas de localStorage
+    });
+  
+    return this._http.put(this.url + 'update_user/' + id, data, { headers: headers });
+  }
+
 
   
   update_password(id:any,data:any,token:any):Observable<any>{
