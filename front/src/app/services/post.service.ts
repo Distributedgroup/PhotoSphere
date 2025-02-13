@@ -15,23 +15,32 @@ export class PostService {
     private _http:HttpClient
   ) { }
 
-  create_post(data:any,token:any):Observable<any>{
-    let headers;
+create_post(data: any, token: any): Observable<any> {
+    let headers: HttpHeaders;
     let body;
-    if(data.type == 'Texto'){
-      headers = new HttpHeaders({'Content-Type':'application/json','Authorization':'Authorization': `Bearer ${token}`});
-      body = data;
-    }else if(data.type == 'Media'){
-      headers = new HttpHeaders({'Authorization': `Bearer ${token}`});
-      body = new FormData();
-      body.append('media',data.media);
-      body.append('contenido',data.content);
-      body.append('extracto',data.extract);
-      body.append('tipo',data.type);
-      body.append('privacidad',data.privacy);
+
+    if (data.type === 'Texto') {
+        headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        });
+        body = JSON.stringify(data);  // Asegurar formato JSON
+    } else if (data.type === 'Media') {
+        headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+        });
+
+        body = new FormData();
+        body.append('media', data.media);
+        body.append('content', data.content);
+        body.append('extract', data.extract);
+        body.append('type', data.type);
+        body.append('privacy', data.privacy);
     }
-    return this._http.post(this.url+'create_post',body,{headers:headers})
-  }
+
+    return this._http.post(`${this.url}create_post`, body, { headers });
+}
+
   get_post_amigos(limit:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization': `Bearer ${token}`});
     return this._http.get(this.url+'get_post_amigos/'+limit,{headers:headers})
