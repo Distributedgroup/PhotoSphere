@@ -41,31 +41,30 @@ export class InfoPerfilComponent implements OnInit {
     );
   }
 
-  init_user(){
+init_user() {
     this.load_data = true;
-    this._userService.get_user_username(this.username,this.token).subscribe(
-      response=>{
-        if(response.data != undefined){
-          this.data = true;
-          this.n_friends = response.n_friends;
-          this.cuenta = response.data; //la cuenta que estamos viendo
-          console.log(this.cuenta);
-          
-          if(!this.cuenta.portada) this.portada = 'assets/images/portada.jpg';
-          else if(this.cuenta.portada) this.portada = this.url + 'get_cover_img/'+this.cuenta.portada;
+    this._userService.get_user_username(this.username, this.token).subscribe(
+        response => {
+            console.log("Respuesta API en Angular:", response); // Depuración
+            if (response.data !== undefined) {
+                this.data = true;
+                this.n_friends = response.n_friends;
+                this.cuenta = response.data;
+                console.log("Datos de cuenta:", this.cuenta);
 
-          if(this.cuenta.avatar == 'defecto.png') this.avatar = 'assets/images/usuario.png';
-          else if(this.cuenta.avatar != 'defecto.png') this.avatar = this.url + 'get_cover_img/'+this.cuenta.avatar;
-
-
-          this.load_data = false;
-        }else{
-          this.data = false;
-          this.load_data = false;
+                this.portada = this.cuenta.portada ? this.url + 'get_cover_img/' + this.cuenta.portada : 'assets/images/portada.jpg';
+                this.avatar = this.cuenta.avatar !== 'defecto.png' ? this.url + 'get_cover_img/' + this.cuenta.avatar : 'assets/images/usuario.png';
+            } else {
+                this.data = false;
+            }
+            this.load_data = false;
+        },
+        error => {
+            console.error("Error en la API:", error);
+            this.load_data = false;
         }
-      }
     );
-  }
+}
 
   uploadImage(event:any,tipo:any){
     var file = event.target.files[0];
