@@ -52,10 +52,10 @@ export class InfoPerfilComponent implements OnInit {
           console.log(this.cuenta);
           
           if(!this.cuenta.portada) this.portada = 'assets/images/portada.jpg';
-          else if(this.cuenta.portada) this.portada = this.url + 'obtener_portada_img/'+this.cuenta.portada;
+          else if(this.cuenta.portada) this.portada = this.url + 'get_cover_img/'+this.cuenta.portada;
 
           if(this.cuenta.avatar == 'defecto.png') this.avatar = 'assets/images/usuario.png';
-          else if(this.cuenta.avatar != 'defecto.png') this.avatar = this.url + 'obtener_portada_img/'+this.cuenta.avatar;
+          else if(this.cuenta.avatar != 'defecto.png') this.avatar = this.url + 'get_cover_img/'+this.cuenta.avatar;
 
 
           this.load_data = false;
