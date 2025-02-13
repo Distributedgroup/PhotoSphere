@@ -19,7 +19,7 @@ export class CardHistoriasComponent implements OnInit {
   public msm_story_error = '';
   public str_image : any = '';
   public image : any = undefined;
-  public socket = io("http://localhost:4201",{transports: ['websocket']});
+  public socket = io("ws://54.172.88.33:4201", { transports: ['websocket'] });
   public historias : Array<any> = [];
   public url = GLOBAL.url;
   public load_historias = true;
