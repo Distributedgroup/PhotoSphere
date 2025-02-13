@@ -12,7 +12,7 @@ export class InvitacionesUsuarioComponent implements OnInit {
   public token = localStorage.getItem('token');
   public load_invitacion = true;
   public invitaciones : Array<any> = [];
-  public socket = io("http://54.172.88.33",{transports: ['websocket']});
+  public socket = io("http://52.6.140.97:5063",{transports: ['websocket']});
 
   constructor(
     private _usuarioService:UsuarioService
