@@ -11,12 +11,17 @@ export class LoginComponent implements OnInit {
 
   public user : any = {};
   public msm_error = '';
-
+  showPassword: boolean = false;
+  
   constructor(
     private _usuarioService:UsuarioService,
     private _router:Router
   ) { }
-
+  
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+  
   ngOnInit(): void {
     if(localStorage.getItem('token')){
       this._router.navigate(['/']);
