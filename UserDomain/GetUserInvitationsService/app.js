@@ -1,65 +1,85 @@
-require('dotenv').config(); // Load environment variables
-var express = require('express');
-var mongoose = require('mongoose');
-var bodyparser = require('body-parser');
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyparser = require('body-parser');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+const cors = require('cors');
 
-var app = express(); // 
-const port = process.env.PORT || 5070;
 
-const userRoutes = require('./routes/getUserInvitation'); 
-app.use(express.json());  
-app.use("/api", userRoutes); 
-
-// Setting up Server with Socket.io
+const app = express();
+const port = process.env.PORT || 5069;
 const httpServer = createServer(app);
 const io = new Server(httpServer, { /* options */ });
 
-io.on("connection", (socket) => {
-    console.log('✅ Socket conectado');
-
-    socket.on('send-invitacion', function (data) {
-        io.emit('new-invitacion', data);
-    });
-
-    socket.on('set-invitacion', function (data) {
-        io.emit('set-new-invitacion', data);
-    });
-
-    socket.on('on-notifacion', function (data) {
-        io.emit('emit-notifacion', data);
-    });
-});
-
-// Connect to MongoDB in Docker on EC2
-const MONGO_URI = process.env.MONGO_URI || "mongodb://3.220.140.139:27017/userinvitation";
-
-mongoose.connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}, (err, res) => {
-    if (err) {
-        console.error("❌ Error connecting to MongoDB:", err);
-    } else {
-        httpServer.listen(port, function () {
-            console.log("✅ Server running on port " + port);
-            console.log("✅ Connected to MongoDB in Docker on EC2");
-        });
-    }
-});
-
-// Configure Middleware
+const MONGO_URI_1 = "mongodb://52.1.158.25:27017/userservice";
+const MONGO_URI_2 = "mongodb://3.220.140.139:27017/userinvitation";
+// 🔹 Middleware
+app.use(cors());
 app.use(bodyparser.urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyparser.json({ limit: '50mb', extended: true }));
 
-// Configure CORS
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Access-Control-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-    res.header('Allow', 'GET, PUT, POST, DELETE, OPTIONS');
+const userRoutes = require('./routes/sendFriendshipInvitation');
+app.use(express.json());
+app.use("/api", userRoutes);
+
+
+app.use((req,res,next)=>{
+    res.header('Access-Control-Allow-Origin','*'); 
+    res.header('Access-Control-Allow-Headers','Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods','GET, PUT, POST, DELETE, OPTIONS');
+    res.header('Allow','GET, PUT, POST, DELETE, OPTIONS');
     next();
 });
 
-module.exports = app;
+
+
+
+// 🔹 WebSockets con Socket.IO
+io.on("connection", (socket) => {
+    console.log('✅ Socket conectado');
+    socket.on('send-invitacion', (data) => io.emit('new-invitacion', data));
+    socket.on('set-invitacion', (data) => io.emit('set-new-invitacion', data));
+    socket.on('on-notifacion', (data) => io.emit('emit-notifacion', data));
+});
+
+
+
+
+const mongoConn1 = mongoose.createConnection(MONGO_URI_1, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+const mongoConn2 = mongoose.createConnection(MONGO_URI_2, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+// Verificar si mongoConn1 y mongoConn2 están definidos
+if (!mongoConn1 || !mongoConn2) {
+    console.error("❌ Error: mongoConn1 o mongoConn2 no están definidos.");
+    process.exit(1); // Detener la ejecución si hay error en la conexión
+}
+
+// 🔹 Manejo de eventos de conexión en MongoDB
+mongoConn1.once('open', () => console.log("✅ Conectado a MongoDB 1"));
+mongoConn2.once('open', () => console.log("✅ Conectado a MongoDB 2"));
+
+mongoConn1.on('error', (err) => console.error("❌ Error en MongoDB 1:", err));
+mongoConn2.on('error', (err) => console.error("❌ Error en MongoDB 2:", err));
+
+// 🔹 Esperar conexiones a MongoDB antes de iniciar el servidor
+setTimeout(() => {
+    httpServer.listen(port, () => {
+        console.log(`🚀 Servidor corriendo en el puerto ${port}`);
+    });
+}, 5000); // Espera para evitar errores de conexión
+
+
+
+// 🔹 Exportar conexiones para ser usadas en modelos
+module.exports = {
+    app,
+    mongoConn1,
+    mongoConn2
+};
