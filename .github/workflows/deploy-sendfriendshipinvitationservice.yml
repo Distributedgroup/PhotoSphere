@@ -30,7 +30,7 @@ jobs:
         run: |
           cd UserDomain/SendFriendshipInvitationService
           docker build --no-cache -t alevm98/sendfriendshipinvitationservice:latest .
-          docker images | grep createpostservice || echo "🚨 Imagen no encontrada localmente"
+          docker images | grep sendfriendshipinvitationservice || echo "🚨 Imagen no encontrada localmente"
 
 
       - name: Subir imagen a Docker Hub
