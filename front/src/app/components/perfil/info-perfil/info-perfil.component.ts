@@ -19,7 +19,7 @@ export class InfoPerfilComponent implements OnInit {
   public msm_error_portada = '';
   public portada = '';
   public avatar = '';
-  public n_amigos = 0;
+  public n_friends = 0;
   public url = GLOBAL.url;
   
   constructor(
@@ -47,7 +47,7 @@ export class InfoPerfilComponent implements OnInit {
       response=>{
         if(response.data != undefined){
           this.data = true;
-          this.n_amigos = response.n_amigos;
+          this.n_friends = response.n_friends;
           this.cuenta = response.data; //la cuenta que estamos viendo
           console.log(this.cuenta);
           
