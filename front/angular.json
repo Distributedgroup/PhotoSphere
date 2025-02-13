@@ -16,9 +16,6 @@
             "outputPath": "dist/front",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "src/favicon.ico",
-            "src/assets",
-            "src/app/components"
             "polyfills": [
               "zone.js"
             ],
