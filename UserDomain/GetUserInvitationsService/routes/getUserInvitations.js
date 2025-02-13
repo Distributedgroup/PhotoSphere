@@ -1,8 +1,7 @@
 var express = require('express');
-var historiasController = require('../controllers/getUserInvitationsController');
+var getUserInvitationsController = require('../Controller/getUserInvitationsController');
 var auth = require('../middlewares/auth');
 var multiparty = require('connect-multiparty');
-var path = multiparty({uploadDir:'./uploads/stories'});
 
 
 var app = express.Router();
