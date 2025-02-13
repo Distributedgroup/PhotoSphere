@@ -1,0 +1,68 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "UpdateUserCoverService API",
+    "description": "API documentation for the UpdateUserCoverService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5061",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/update_user_cover": {
+      "post": {
+        "summary": "Update user cover image",
+        "description": "Uploads a new cover image for the authenticated user and updates the database.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": true,
+            "type": "file",
+            "description": "The cover image file to be uploaded"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cover image updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string" },
+                "portada": { "type": "string" }
+              }
+            }
+          },
+          "400": {
+            "description": "No image uploaded",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string" }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid or expired JWT",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string" }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
