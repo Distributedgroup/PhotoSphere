@@ -1,0 +1,71 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "UpdateUserService API",
+    "description": "API documentation for the UpdateUserService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5051",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/update_user/{id}": {
+      "put": {
+        "summary": "Update user profile",
+        "description": "Allows authenticated users to update their profile details.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the user to update"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer JWT token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "names": { "type": "string" },
+                "surnames": { "type": "string" },
+                "gender": { "type": "string" },
+                "birth": { "type": "string", "format": "date" },
+                "profession": { "type": "string" },
+                "phone": { "type": "string" },
+                "description": { "type": "string" }
+              },
+              "required": ["names", "surnames"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": { "type": "object" }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}
