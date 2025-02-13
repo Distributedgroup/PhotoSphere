@@ -18,7 +18,7 @@ app.use(cors());
 app.use(bodyparser.urlencoded({ limit: '50mb', extended: true }));
 app.use(bodyparser.json({ limit: '50mb', extended: true }));
 
-const userRoutes = require('./routes/sendFriendshipInvitation');
+const userRoutes = require('./routes/getUserInvitation');
 app.use(express.json());
 app.use("/api", userRoutes);
 
