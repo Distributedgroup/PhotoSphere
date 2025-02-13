@@ -1,3 +1,6 @@
+
+const User_invitation = require('../Model/User_invitation'); 
+
 const send_friendship_invitation = async function(req,res){
     if (req.user) {
         let data = req.body;
