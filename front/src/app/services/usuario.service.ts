@@ -31,10 +31,16 @@ export class UsuarioService {
     return this._http.get(this.url+'get_user/'+id,{headers:headers})
   }
 
-  update_user(id:any,data:any,token:any):Observable<any>{
-    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-    return this._http.put(this.url+'update_user/'+id,data,{headers:headers})
-  }
+
+  update_user(id: any, data: any, token: any): Observable<any> {
+  let headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`  // Asegúrate de que 'token' sea el valor real del token JWT
+  });
+  
+  return this._http.put(this.url + 'update_user/' + id, data, { headers: headers });
+}
+
   
   update_password(id:any,data:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
