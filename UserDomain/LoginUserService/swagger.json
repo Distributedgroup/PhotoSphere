@@ -1,0 +1,73 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "LoginUserService API",
+    "description": "API documentation for the LoginUserService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5052",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/login_user": {
+      "post": {
+        "summary": "Authenticate user",
+        "description": "Validates user credentials and returns a JWT token if authentication is successful.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response, returns user details and JWT token",
+            "schema": {
+              "$ref": "#/definitions/LoginResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid request format"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "LoginRequest": {
+      "type": "object",
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "password": {
+          "type": "string",
+          "format": "password"
+        }
+      }
+    },
+    "LoginResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "_id": { "type": "string" },
+            "email": { "type": "string" },
+            "username": { "type": "string" }
+          }
+        },
+        "token": { "type": "string" }
+      }
+    }
+  }
+}
