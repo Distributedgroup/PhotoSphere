@@ -23,4 +23,4 @@ var User_invitationSchema = Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('user_invitation', User_invitationSchema);
+module.exports = mongoConn2.model('user_invitation', User_invitationSchema);
