@@ -1,0 +1,63 @@
+name: General Deployment Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  approval:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request approval from collaborator
+        uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          reviewers: "JuanGuevara90" # Reemplaza con el usuario de GitHub del aprobador
+
+  wait-for-approval:
+    needs: approval
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for manual approval
+        uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  merge-pr:
+    needs: wait-for-approval
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge PR to Main
+        uses: "pascalgn/automerge-action@v0.15.3"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_LABELS: ""
+          MERGE_METHOD: "squash"
+          MERGE_RETRIES: 5
+          MERGE_RETRY_SLEEP: 10000
+
+  trigger-microservices:
+    needs: merge-pr
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Microservices Deployment Workflows
+        run: |
+          echo "🚀 Triggering microservices deployment"
+          gh workflow run deploy-loginuserservice.yml 
+          gh workflow run deploy-updateuserservice.yml 
+          gh workflow run deploy-resetpasswordservice.yml 
+          gh workflow run deploy-sendfriendshipinvitationservice.yml 
+          gh workflow run deploy-updatepasswordservice.yml 
+          gh workflow run deploy-updateuseravatarservice.yml 
+          gh workflow run deploy-updateusercoverservice.yml 
+          gh workflow run deploy-validatecodeservice.yml 
+          gh workflow run deploy-validateuserservice.yml 
+          gh workflow run deploy-createpostservice.yml
+          gh workflow run deploy-createuserservice.yml
+          gh workflow run deploy-getcoeverimageservice.yml
+          gh workflow run deploy-getuserservice.yml
+          gh workflow run deploy-getuserusernameservice.yml
+          gh workflow run deploy-deploy-front.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
