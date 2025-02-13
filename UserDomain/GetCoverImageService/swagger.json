@@ -1,0 +1,37 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "GetCoverImageService API",
+    "description": "API documentation for the GetCoverImageService microservice",
+    "version": "1.0.0"
+  },
+  "host": "your-ec2-instance:5062",
+  "schemes": ["http"],
+  "basePath": "/api",
+  "paths": {
+    "/get_cover_img/{img}": {
+      "get": {
+        "summary": "Retrieve a cover image",
+        "description": "Fetches an image file from the storage directory.",
+        "parameters": [
+          {
+            "name": "img",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The filename of the image to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response, returns the requested image file"
+          },
+          "404": {
+            "description": "Image not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}
