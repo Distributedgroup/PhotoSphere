@@ -1,6 +1,21 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
 
+const MONGO_URI_1 = "mongodb://52.1.158.25:27017/userservice"; // IP de la segunda base de datos
+const mongoConn1 = mongoose.createConnection(MONGO_URI_1, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+mongoConn1.on('error', err => {
+    console.error("❌ Error conectando a MongoDB 1 en User.js:", err);
+});
+
+mongoConn1.once('open', () => {
+    console.log("✅ Conectado correctamente a MongoDB 1 en User.js");
+});
+
+
+const Schema = mongoose.Schema;
 var UserSchema = Schema({
     names: {type: String, required: true},
     surnames: {type: String, required: true},
